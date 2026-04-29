@@ -1,5 +1,5 @@
 ---
-title: "Guide: Så skapar du en blixtsnabb blogg helt gratis"
+title: "Guide: Så skapar du en snabbt en blogg helt gratis"
 description: "En steg-för-steg guide till hur jag satte upp min dev-blogg lokalt och publicerade den via GitHub och Azure Static Web Apps – inklusive editor, bilder och dagligt arbetsflöde."
 pubDate: "Apr 30 2026"
 heroImage: "/images/blog/fran-noll-till-live/hero.jpg"
