@@ -1,14 +1,25 @@
 ---
 title: "Min resa till Azure"
-description: "Här skriver jag om hur jag satte upp min blogg."
-pubDate: "Apr 29 2026"
+description: "Här skriver jag om hur jag satte upp min blogg och testar kodformatering."
+pubDate: "Apr 28 2026"
 ---
 
 # Hej världen!
 
-Detta är mitt allra första inlägg. Jag har byggt denna blogg med:
-* **Astro** (som ramverk)
-* **GitHub** (för min kod)
-* **Azure** (för att visa sidan)
+Detta är mitt allra första inlägg. Jag har byggt denna blogg med Astro och Azure. För att se om allt fungerar som det ska, testar vi nu att visa lite C#-kod.
 
-Det känns riktigt bra att vara live!
+### Test av kodsyntax
+
+Här är en enkel klass i C# för att hälsa på besökaren:
+
+```csharp
+public class WelcomeMessage
+{
+    public string Name { get; set; } = "Mattias";
+
+    public void Greet()
+    {
+        // En enkel hälsning i konsolen
+        Console.WriteLine($"Välkommen till {Name}s dev-blogg!");
+    }
+}
