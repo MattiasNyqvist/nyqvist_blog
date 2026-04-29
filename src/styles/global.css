@@ -1,74 +1,81 @@
-/* --- MODERN & PROFESSIONAL REBOOT --- */
+/* --- MINIMALIST & EXCLUSIVE THEME --- */
 
 :root {
-	--accent: #025043;
-	--accent-soft: #e6f2f1;
-	--black: #111827;
-	--gray-dark: #374151;
-	--gray: #6b7280;
-	--bg-outer: #f3f4f6; /* Light gray background to create contrast */
+	--brand: #367588;
+	--text-main: #2d3436;
+	--text-muted: #636e72;
+	--bg-body: #f7f9fa; /* Very soft cool gray */
 	--bg-card: #ffffff;
-	--shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+	--card-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 body {
-	font-family: 'Inter', -apple-system, system-ui, sans-serif;
+	/* Primary font: Segoe UI, falling back to system sans */
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	margin: 0;
 	padding: 0;
-	background-color: var(--bg-outer);
-	color: var(--gray-dark);
+	background-color: var(--bg-body);
+	color: var(--text-main);
 	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
 }
 
-/* This creates the "Card" look for your content */
 main {
 	width: 100%;
 	max-width: 800px;
-	margin: 3rem auto;
-	padding: 0 1rem;
+	margin: 4rem auto;
+	padding: 0 1.5rem;
 }
 
-/* Target the wrapper or article to create the floating effect */
+/* Floating Card Layout */
 article, section {
 	background: var(--bg-card);
-	padding: 3.5rem;
-	border-radius: 16px;
-	box-shadow: var(--shadow);
+	padding: 4rem;
+	border-radius: 4px; /* Minimalist sharp corners with slight rounding */
+	box-shadow: var(--card-shadow);
 }
 
-/* Typography refinements */
-h1 {
-	font-size: clamp(2rem, 6vw, 2.8rem);
-	color: var(--black);
-	font-weight: 800;
-	letter-spacing: -0.03em;
-	line-height: 1.1;
+/* Typography - Light and Clean */
+h1, h2, h3 {
+	color: var(--text-main);
+	font-weight: 300; /* Light weight for a modern look */
 	margin-bottom: 1.5rem;
+	line-height: 1.2;
+}
+
+h1 {
+	font-size: 2.4rem;
+	letter-spacing: -0.01em;
 }
 
 h2 {
 	font-size: 1.6rem;
-	color: var(--accent);
-	font-weight: 700;
-	margin-top: 2.5rem;
+	margin-top: 3rem;
+	color: var(--brand);
 }
 
-/* Link animations */
+p {
+	margin-bottom: 1.5rem;
+	font-weight: 400;
+}
+
+/* Link Style - Minimalist */
 a {
-	color: var(--accent);
+	color: var(--brand);
 	text-decoration: none;
-	background-image: linear-gradient(var(--accent), var(--accent));
-	background-position: 0% 100%;
-	background-repeat: no-repeat;
-	background-size: 0% 2px;
-	transition: background-size 0.3s;
+	transition: opacity 0.2s ease;
 }
 
 a:hover {
-	background-size: 100% 2px;
+	opacity: 0.7;
 }
 
-/* Post list on the Blog page */
+/* Remove decorative elements as requested */
+hr {
+	display: none; /* Removes the horizontal line between sections */
+}
+
+/* Blog list styling */
 ul {
 	list-style: none;
 	padding: 0;
@@ -76,7 +83,7 @@ ul {
 
 li {
 	padding: 1.5rem 0;
-	border-bottom: 1px solid var(--bg-outer);
+	border-bottom: 1px solid #f0f0f0;
 }
 
 li:last-child {
@@ -84,6 +91,7 @@ li:last-child {
 }
 
 @media (max-width: 720px) {
-	main { margin: 1rem auto; }
-	article, section { padding: 1.5rem; }
+	main { margin: 1.5rem auto; }
+	article, section { padding: 2rem; }
+	h1 { font-size: 1.8rem; }
 }
