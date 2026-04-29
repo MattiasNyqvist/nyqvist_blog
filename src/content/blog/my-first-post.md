@@ -1,7 +1,7 @@
 ---
 title: "Min resa till Azure"
 description: "Här skriver jag om hur jag satte upp min blogg."
-pubDate: "Apr 29 2026"
+pubDate: "Apr 28 2026"
 ---
 
 # Hej världen!
