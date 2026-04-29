@@ -1,111 +1,89 @@
-/*
-  Modern Professional Theme - "The Floating Card" Edition
-  Focusing on depth, contrast, and refined typography.
-*/
+/* --- MODERN & PROFESSIONAL REBOOT --- */
 
 :root {
-	/* Deep Teal brand colors */
 	--accent: #025043;
-	--accent-dark: #01362d;
-	--accent-light: #e6f2f2;
-	
-	/* Neutral palette */
-	--black: #1a1c1e;
+	--accent-soft: #e6f2f1;
+	--black: #111827;
 	--gray-dark: #374151;
 	--gray: #6b7280;
-	--gray-light: #f3f4f6;
-	
-	/* Backgrounds */
-	--bg-page: #f8fafc; /* Very light blue-gray for the outer background */
-	--bg-card: #ffffff; /* Pure white for the content area */
-	
-	--radius: 12px;
-	--shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+	--bg-outer: #f3f4f6; /* Light gray background to create contrast */
+	--bg-card: #ffffff;
+	--shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
 }
 
 body {
-	font-family: 'Inter', -apple-system, sans-serif;
+	font-family: 'Inter', -apple-system, system-ui, sans-serif;
 	margin: 0;
 	padding: 0;
-	background-color: var(--bg-page);
+	background-color: var(--bg-outer);
 	color: var(--gray-dark);
-	line-height: 1.7;
+	line-height: 1.6;
 }
 
+/* This creates the "Card" look for your content */
 main {
-	width: 800px; /* Slightly wider for better balance */
-	max-width: calc(100% - 2em);
+	width: 100%;
+	max-width: 800px;
 	margin: 3rem auto;
-	padding: 0; /* Removing padding to let the card handle it */
+	padding: 0 1rem;
 }
 
-/* Creating the "Card" effect for the content */
-article, .content-wrapper {
+/* Target the wrapper or article to create the floating effect */
+article, section {
 	background: var(--bg-card);
-	padding: 3rem;
-	border-radius: var(--radius);
+	padding: 3.5rem;
+	border-radius: 16px;
 	box-shadow: var(--shadow);
-	border: 1px solid rgba(0,0,0,0.02);
 }
 
 /* Typography refinements */
-h1, h2, h3 {
+h1 {
+	font-size: clamp(2rem, 6vw, 2.8rem);
 	color: var(--black);
 	font-weight: 800;
-	letter-spacing: -0.025em;
-}
-
-h1 {
-	font-size: clamp(2rem, 5vw, 2.6rem);
-	margin-bottom: 1.5rem;
+	letter-spacing: -0.03em;
 	line-height: 1.1;
+	margin-bottom: 1.5rem;
 }
 
 h2 {
-	font-size: 1.8rem;
-	margin-top: 2.5rem;
+	font-size: 1.6rem;
 	color: var(--accent);
+	font-weight: 700;
+	margin-top: 2.5rem;
 }
 
-/* Interactive Links */
+/* Link animations */
 a {
 	color: var(--accent);
 	text-decoration: none;
-	border-bottom: 2px solid var(--accent-light);
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	background-image: linear-gradient(var(--accent), var(--accent));
+	background-position: 0% 100%;
+	background-repeat: no-repeat;
+	background-size: 0% 2px;
+	transition: background-size 0.3s;
 }
 
 a:hover {
-	background-color: var(--accent-light);
-	border-bottom-color: var(--accent);
-	color: var(--accent-dark);
+	background-size: 100% 2px;
 }
 
-/* Post list styling (if applicable) */
+/* Post list on the Blog page */
 ul {
 	list-style: none;
 	padding: 0;
 }
 
 li {
-	margin-bottom: 1rem;
-	padding: 1rem;
-	border-radius: 8px;
-	transition: background 0.2s ease;
+	padding: 1.5rem 0;
+	border-bottom: 1px solid var(--bg-outer);
 }
 
-li:hover {
-	background: var(--gray-light);
-}
-
-/* Images */
-img {
-	border-radius: var(--radius);
-	display: block;
-	margin: 2rem auto;
+li:last-child {
+	border-bottom: none;
 }
 
 @media (max-width: 720px) {
 	main { margin: 1rem auto; }
-	article, .content-wrapper { padding: 1.5rem; }
+	article, section { padding: 1.5rem; }
 }
