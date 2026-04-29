@@ -46,7 +46,8 @@ import HeaderLink from './HeaderLink.astro';
 	header {
 		margin: 0;
 		padding: 0;
-		background: #008080; /* Your Teal color */
+		/* Re-applying your Teal background */
+		background: #008080;
 		box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 	}
 	
@@ -65,7 +66,7 @@ import HeaderLink from './HeaderLink.astro';
 	}
 
 	h2 a {
-		color: white;
+		color: white; /* Setting title text to white */
 		text-decoration: none;
 		letter-spacing: 0.5px;
 	}
@@ -77,6 +78,7 @@ import HeaderLink from './HeaderLink.astro';
 
 	nav a {
 		padding: 0.5rem 0;
+		/* Making links slightly off-white for a smoother look */
 		color: rgba(255, 255, 255, 0.85);
 		text-decoration: none;
 		font-weight: 500;
@@ -87,11 +89,11 @@ import HeaderLink from './HeaderLink.astro';
 
 	nav a:hover,
 	nav a.active {
-		color: white;
+		color: white; /* Bright white on hover/active */
 		border-bottom-color: white;
 	}
 
-	/* Mobile adjustment */
+	/* Responsive adjustment for small screens */
 	@media (max-width: 600px) {
 		nav {
 			flex-direction: column;
