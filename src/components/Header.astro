@@ -46,59 +46,75 @@ import HeaderLink from './HeaderLink.astro';
 	header {
 		margin: 0;
 		padding: 0;
-		/* Re-applying your Teal background */
-		background:  #20576E;
-		box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+		background: #025043; /* Your dark teal */
+		box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 	}
 	
 	nav {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 1rem 2rem;
-		max-width: 960px;
+		padding: 0.8rem 2rem;
+		max-width: 1200px;
 		margin: 0 auto;
 	}
 
 	h2 {
 		margin: 0;
-		font-size: 1.25rem;
+		font-size: 1.4rem;
 	}
 
 	h2 a {
-		color: white; /* Setting title text to white */
+		color: #ffffff;
 		text-decoration: none;
-		letter-spacing: 0.5px;
+		font-weight: 800;
+		letter-spacing: -0.5px;
 	}
 
 	.internal-links {
 		display: flex;
-		gap: 1.5rem;
+		gap: 2rem;
 	}
 
 	nav a {
 		padding: 0.5rem 0;
-		/* Making links slightly off-white for a smoother look */
-		color: rgba(255, 255, 255, 0.85);
+		color: rgba(255, 255, 255, 0.8);
 		text-decoration: none;
 		font-weight: 500;
-		font-size: 0.95rem;
 		border-bottom: 2px solid transparent;
 		transition: all 0.2s ease;
 	}
 
 	nav a:hover,
 	nav a.active {
-		color: white; /* Bright white on hover/active */
-		border-bottom-color: white;
+		color: #ffffff;
+		border-bottom-color: #ffffff;
 	}
 
-	/* Responsive adjustment for small screens */
-	@media (max-width: 600px) {
-		nav {
-			flex-direction: column;
-			gap: 1rem;
-			padding: 1rem;
+	.social-links {
+		display: flex;
+		gap: 1rem;
+	}
+
+	/* This part hides the text labels for the icons correctly */
+	.social-links a span {
+		display: none;
+	}
+
+	.social-links svg {
+		fill: white;
+		width: 24px;
+		height: 24px;
+		transition: transform 0.2s ease;
+	}
+
+	.social-links a:hover svg {
+		transform: scale(1.1);
+	}
+
+	@media (max-width: 720px) {
+		.social-links {
+			display: none; /* Hide social icons on small mobile to save space */
 		}
 	}
 </style>
