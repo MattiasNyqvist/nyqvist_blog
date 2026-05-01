@@ -2,9 +2,8 @@
 title: "Guide: Så skapar du en modern blogg helt gratis"
 description: "En steg-för-steg guide till hur jag satte upp min dev-blogg lokalt och publicerade den via GitHub och Azure Static Web Apps – inklusive editor, bilder och dagligt arbetsflöde."
 pubDate: "Apr 30 2026"
-heroImage: "/images/blog/fran-noll-till-live/hero.jpg"
+heroImage: "/images/blog/astro/astro_hero.jpg"
 ---
-
 # Från noll till live
 
 Som utvecklare vill man ha en plats att dela sina tankar – utan krångel och höga kostnader. Jag ville bygga något snabbt, versionshanterat och helt gratis att driva. Valet föll på ramverket **Astro** i kombination med **Azure Static Web Apps**.
@@ -101,11 +100,12 @@ Det dagliga arbetsflödet är enkelt: du skriver en Markdown-fil lokalt och comm
 
 [Visual Studio Code](https://code.visualstudio.com/) är det naturliga valet. Med några tillägg blir upplevelsen riktigt bra:
 
-| Tillägg | Vad det gör |
-|---|---|
+
+| Tillägg                | Vad det gör                                      |
+| ------------------------- | --------------------------------------------------- |
 | **Markdown All in One** | Förhandsvisning, genvägar och table of contents |
-| **markdownlint** | Flaggar formateringsfel i realtid |
-| **Astro** | Syntax-highlighting för `.astro`-filer |
+| **markdownlint**        | Flaggar formateringsfel i realtid                 |
+| **Astro**               | Syntax-highlighting för`.astro`-filer            |
 
 Öppna Markdown-förhandsvisningen med `Ctrl + Shift + V` (eller `Cmd + Shift + V` på Mac) för att se hur inlägget ser ut medan du skriver.
 
@@ -155,20 +155,22 @@ Astro har **två platser** för bilder och de fungerar på helt olika sätt. Fö
 
 ### Snabbreferens – välj rätt mapp direkt
 
-| What | Folder | Markdown Reference |
-|---|---|---|
-| Hero image (frontmatter) | `public/images/blog/fran-noll-till-live/hero.jpg` | `heroImage: "/images/blog/fran-noll-till-live/hero.jpg"` |
-| Image in post body | `public/images/blog/fran-noll-till-live/screenshot.jpg` | `![alt text](/images/blog/fran-noll-till-live/screenshot.jpg)` |
-| Logo, favicon | `public/logo.svg` | `src="/logo.svg"` |
-| Auto-optimized image | `src/assets/images/about-me.jpg` | `import` + `<Image />` in `.astro`/`.mdx` |
+
+| What                     | Folder                                                  | Markdown Reference                                             |
+| -------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
+| Hero image (frontmatter) | `public/images/blog/fran-noll-till-live/hero.jpg`       | `heroImage: "/images/blog/fran-noll-till-live/hero.jpg"`       |
+| Image in post body       | `public/images/blog/fran-noll-till-live/screenshot.jpg` | `![alt text](/images/blog/fran-noll-till-live/screenshot.jpg)` |
+| Logo, favicon            | `public/logo.svg`                                       | `src="/logo.svg"`                                              |
+| Auto-optimized image     | `src/assets/images/about-me.jpg`                        | `import` + `<Image />` in `.astro`/`.mdx`                      |
 
 ### Rekommenderade bildformat och storlekar
 
-| Image type | Size | Format | Max file size |
-|---|---|---|---|
-| Hero | 1200 × 630 px | `.webp` / `.jpg` | 200 KB |
-| Screenshot in post body | max 800 px wide | `.webp` / `.png` | 100 KB |
-| Logo | any | `.svg` | — |
+
+| Image type              | Size            | Format           | Max file size |
+| ------------------------- | ----------------- | ------------------ | --------------- |
+| Hero                    | 1200 × 630 px  | `.webp` / `.jpg` | 200 KB        |
+| Screenshot in post body | max 800 px wide | `.webp` / `.png` | 100 KB        |
+| Logo                    | any             | `.svg`           | —            |
 
 Komprimera bilderna med [Squoosh](https://squoosh.app/) – gratis, direkt i webbläsaren – innan du lägger dem i projektet.
 
