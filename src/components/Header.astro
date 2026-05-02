@@ -5,21 +5,34 @@ import HeaderLink from "./HeaderLink.astro";
 
 <header>
   <nav>
-    <h2><a href="/">{SITE_TITLE}</a></h2>
+    <h2>
+      <a href="/">
+        <img
+          src="/logo.svg"
+          alt="Nyqvist Blogg logotyp"
+          width="32"
+          height="32"
+          style="filter: brightness(0) invert(1);"
+        />
+        {SITE_TITLE}
+      </a>
+    </h2>
     <div class="internal-links">
-      <HeaderLink href="/">Home</HeaderLink>
-      <HeaderLink href="/blog">Blog</HeaderLink>
-      <HeaderLink href="/about">About</HeaderLink>
+      <HeaderLink href="/">Start</HeaderLink>
+      <HeaderLink href="/blog">Inlägg</HeaderLink>
+      <HeaderLink href="/about">Om mig</HeaderLink>
     </div>
   </nav>
 </header>
+
 <style>
   header {
     margin: 0;
     padding: 0;
-    /* A deeper, more saturated Teal Blue for better contrast */
     background: #2a5b6a;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   nav {
@@ -34,11 +47,14 @@ import HeaderLink from "./HeaderLink.astro";
   h2 {
     margin: 0;
     font-size: 1.1rem;
-    font-weight: 300; /* Light and clean */
+    font-weight: 300;
     letter-spacing: 0.5px;
   }
 
   h2 a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     color: #ffffff;
     text-decoration: none;
   }
@@ -63,26 +79,5 @@ import HeaderLink from "./HeaderLink.astro";
   nav a.active {
     color: #ffffff;
     border-bottom-color: rgba(255, 255, 255, 0.5);
-  }
-
-  .social-links {
-    display: flex;
-    gap: 1.5rem;
-  }
-
-  .social-links a span {
-    display: none;
-  }
-
-  .social-links svg {
-    fill: white;
-    width: 18px;
-    height: 18px;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-  }
-
-  .social-links a:hover svg {
-    opacity: 1;
   }
 </style>

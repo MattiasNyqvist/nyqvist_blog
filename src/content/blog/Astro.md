@@ -4,8 +4,6 @@ description: "En steg-för-steg guide till hur jag satte upp min dev-blogg lokal
 pubDate: "Apr 30 2026"
 heroImage: "../../assets/images/blog/astro/astro_hero.jpg"
 ---
-# Astro
-
 Jag önskade ett eget hörn på nätet. Inte nödvändigtvis för att nå en stor publik, utan för att ha någonstans att skriva ner det man lär sig – och kanske slippa googla samma sak två gånger. Tänker även att det handlar om att dela med sig till andra.
 
 Jag ville ha något snabbt, versionshanterat och gratis att driva. Valet föll på **Astro** i kombination med **Azure Static Web Apps** med en automatisk pipeline via **GitHub** som sköter publiceringen

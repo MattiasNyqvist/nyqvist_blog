@@ -1,45 +1,153 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import { getCollection } from 'astro:content';
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import { getCollection } from "astro:content";
 
-// Här hämtar vi alla inlägg och sorterar dem efter datum
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
-// Vi tar det allra senaste inlägget
 const lastPost = posts[0];
 ---
 
 <!doctype html>
 <html lang="sv">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>Välkommen till min dev-blogg!</h1>
-			
-			{lastPost ? (
-				<section>
-					<h2>Senaste inlägget: {lastPost.data.title}</h2>
-					<p>{lastPost.data.description}</p>
-					<a href={`/blog/${lastPost.id}/`}>Läs hela inlägget här</a>
-				</section>
-			) : (
-				<p>Inga inlägg hittades ännu.</p>
-			)}
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <div class="hero fade-in">
+        <p class="hero-label">En blogg för dig som gillar tech</p>
+        <p class="hero-text">
+          Här skriver jag om det som fångar mitt intresse för dagen – kod, AI
+          och mjukvaruutveckling, nya verktyg och vad som händer i branschen.
+          Tutorials, experiment, sidoprojekt och udda idéer, blandat med
+          reflektioner från resan mot att bli en bättre utvecklare.
+        </p>
+      </div>
 
-			<hr />
-			<p>
-				Här skriver jag om min resa i Azure och utveckling. 
-				Klicka på "Blog" i menyn för att se alla mina tankar.
-			</p>
-		</main>
-		<Footer />
-	</body>
+      {
+        lastPost ? (
+          <section class="latest-post fade-in delay-1">
+            <span class="post-tag">Senaste inlägget</span>
+            <h2>{lastPost.data.title}</h2>
+            <p class="post-description">{lastPost.data.description}</p>
+            <a href={`/blog/${lastPost.id}/`} class="cta-button">
+              Läs inlägget →
+            </a>
+          </section>
+        ) : (
+          <p>Inga inlägg hittades ännu.</p>
+        )
+      }
+    </main>
+    <Footer />
+  </body>
 </html>
+
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in {
+    animation: fadeInUp 0.5s ease both;
+  }
+
+  .delay-1 {
+    animation-delay: 0.15s;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 3rem 0 2.5rem 0;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-text {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    max-width: 620px;
+    margin: 0;
+  }
+
+  /* Latest post card */
+  .latest-post {
+    background: var(--bg-card);
+    border-left: 3px solid var(--brand);
+    border-radius: 4px;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+  }
+
+  .latest-post h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--text-main);
+    line-height: 1.3;
+  }
+
+  .post-description {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.75rem;
+    line-height: 1.7;
+  }
+
+  /* Outlined CTA button */
+  .cta-button {
+    display: inline-block;
+    padding: 0.55rem 1.25rem;
+    border: 1.5px solid var(--brand);
+    border-radius: 3px;
+    color: var(--brand);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .cta-button:hover {
+    background: var(--brand);
+    color: #ffffff;
+    opacity: 1;
+  }
+
+  @media (max-width: 720px) {
+    .latest-post {
+      padding: 1.25rem 1rem 1.25rem 1.25rem;
+      border-left-width: 2px;
+    }
+
+    .hero {
+      padding: 1.5rem 0 1.5rem 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-text {
+      font-size: 0.95rem;
+    }
+
+    .cta-button {
+      width: 100%;
+      text-align: center;
+      box-sizing: border-box;
+    }
+  }
+</style>
