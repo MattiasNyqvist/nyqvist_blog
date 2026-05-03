@@ -2,6 +2,7 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import Hero from "../components/Hero.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import { getCollection } from "astro:content";
 
@@ -20,21 +21,11 @@ const lastPost = posts[0];
   <body>
     <Header />
     <main>
-      <div class="hero fade-in">
-        <p class="hero-label">En blogg för dig som gillar tech</p>
-        <p class="hero-text">
-          Här skriver jag om det som fångar mitt intresse för dagen – kod, AI
-          och mjukvaruutveckling, nya verktyg och vad som händer i branschen.
-          Tutorials, experiment, sidoprojekt och udda idéer, blandat med
-          reflektioner från resan mot att bli en bättre utvecklare. Med bakgrund
-          i ledarskap smyger sig även tankar om ledarskap, team och teknikkultur
-          in då och då.
-        </p>
-      </div>
+      <Hero />
 
       {
         lastPost ? (
-          <section class="latest-post fade-in delay-1">
+          <section class="latest-post fade-in">
             <span class="post-tag">Senaste inlägget</span>
             <h2>{lastPost.data.title}</h2>
             <p class="post-description">{lastPost.data.description}</p>
@@ -67,52 +58,33 @@ const lastPost = posts[0];
     animation: fadeInUp 0.5s ease both;
   }
 
-  .delay-1 {
-    animation-delay: 0.15s;
-  }
-
-  /* Hero */
-  .hero {
-    padding: 3rem 0 2.5rem 0;
-    margin-bottom: 2.5rem;
-  }
-
-  .hero-text {
-    font-size: 1.05rem;
-    color: var(--text-muted);
-    line-height: 1.75;
-    max-width: 620px;
-    margin: 0;
-  }
-
   /* Latest post card */
   .latest-post {
     background: var(--bg-card);
     border-left: 3px solid var(--brand);
-    border-radius: 4px;
-    padding: 2rem;
-    box-shadow: var(--card-shadow);
+    border-radius: 6px;
+    padding: 3rem 3rem 3rem 2.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
 
   .latest-post h2 {
     margin: 0 0 1rem 0;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 400;
-    color: var(--text-main);
+    color: #111827;
     line-height: 1.3;
   }
 
   .post-description {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: 1.75rem;
-    line-height: 1.7;
+    color: #5a5a5a;
+    font-size: 0.97rem;
+    margin-bottom: 2rem;
+    line-height: 1.8;
   }
 
-  /* Outlined CTA button */
   .cta-button {
     display: inline-block;
-    padding: 0.55rem 1.25rem;
+    padding: 0.6rem 1.4rem;
     border: 1.5px solid var(--brand);
     border-radius: 3px;
     color: var(--brand);
@@ -132,18 +104,8 @@ const lastPost = posts[0];
   }
 
   @media (max-width: 720px) {
-    .hero {
-      padding: 1.5rem 0;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero-text {
-      font-size: 0.95rem;
-      max-width: 100%;
-    }
-
     .latest-post {
-      padding: 1.25rem 1rem 1.25rem 1.25rem;
+      padding: 1.75rem 1.25rem;
       border-left-width: 2px;
     }
 

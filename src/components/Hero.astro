@@ -1,0 +1,115 @@
+---
+import { SITE_TITLE } from "../consts";
+---
+
+<div class="hero-wrapper">
+  <div class="hero-content">
+    <p class="hero-eyebrow">Kod · AI · Mjukvaruutveckling</p>
+    <h1 class="hero-title">{SITE_TITLE}</h1>
+    <p class="hero-lead">
+      Ett öppet anteckningsblock från en vetgirig utvecklare. Här landar det jag
+      håller på med, testar och tänker på – ibland djupdykningar i teknik,
+      ibland något helt annat.
+    </p>
+  </div>
+
+  <div class="hero-photo">
+    <img
+      src="/images/mattias.jpg"
+      alt="Mattias Nyqvist"
+      width="200"
+      height="200"
+      class="photo-round"
+    />
+  </div>
+</div>
+
+<style>
+  .hero-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+    padding: 4rem 0 4.5rem 0;
+    margin-bottom: 3rem;
+    width: 100%;
+  }
+
+  .hero-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin: 0 0 1.25rem 0;
+  }
+
+  .hero-title {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 3.4rem !important;
+    font-weight: 200 !important;
+    letter-spacing: -0.02em;
+    color: #111827;
+    line-height: 1.08;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .hero-lead {
+    font-size: 1rem;
+    color: #6b7280;
+    line-height: 1.85;
+    margin: 0;
+    font-weight: 300;
+  }
+
+  .hero-photo {
+    flex-shrink: 0;
+  }
+
+  .photo-round {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    filter: grayscale(10%);
+  }
+
+  /* Mobil – behåll rad men komprimera */
+  @media (max-width: 720px) {
+    .hero-wrapper {
+      flex-direction: row;
+      align-items: center;
+      padding: 1.5rem 0 2rem 0;
+      margin-bottom: 1.5rem;
+      gap: 1.25rem;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title {
+      font-size: 1.8rem !important;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-lead {
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .photo-round {
+      width: 90px;
+      height: 90px;
+    }
+  }
+</style>
