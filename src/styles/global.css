@@ -91,8 +91,8 @@ li:last-child {
   border-bottom: none;
 }
 
-/* Cards */
-article, section {
+/* Cards – only sections, not blog post articles */
+section {
   background: var(--bg-card);
   padding: 4rem;
   border-radius: 4px;
@@ -111,12 +111,16 @@ article, section {
   margin: 0 0 1rem 0;
 }
 
+.hero-image {
+  width: 100%;
+  padding-top: 2rem;
+}
+
 @media (max-width: 720px) {
   main {
     margin: 1.5rem auto;
   }
 
-  article,
   section {
     padding: 2rem;
   }

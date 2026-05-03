@@ -27,7 +27,7 @@ const lastPost = posts[0];
           och mjukvaruutveckling, nya verktyg och vad som händer i branschen.
           Tutorials, experiment, sidoprojekt och udda idéer, blandat med
           reflektioner från resan mot att bli en bättre utvecklare. Med bakgrund
-          i ledarskap smyger sig även tankar omledarskap, team och teknikkultur
+          i ledarskap smyger sig även tankar om ledarskap, team och teknikkultur
           in då och då.
         </p>
       </div>
@@ -132,18 +132,19 @@ const lastPost = posts[0];
   }
 
   @media (max-width: 720px) {
-    .latest-post {
-      padding: 1.25rem 1rem 1.25rem 1.25rem;
-      border-left-width: 2px;
-    }
-
     .hero {
-      padding: 1.5rem 0 1.5rem 0;
+      padding: 1.5rem 0;
       margin-bottom: 1.5rem;
     }
 
     .hero-text {
       font-size: 0.95rem;
+      max-width: 100%;
+    }
+
+    .latest-post {
+      padding: 1.25rem 1rem 1.25rem 1.25rem;
+      border-left-width: 2px;
     }
 
     .cta-button {
