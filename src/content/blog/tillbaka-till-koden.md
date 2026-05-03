@@ -1,5 +1,5 @@
 ---
-title: "Tillbaka till koden – och in i en bransch som förändrats"
+title: "Tillbaka till koden i en bransch som förändrats"
 description: "För en månad sedan klev jag av rollen som chef. Det här är mina tankar om vad det innebär att komma tillbaka till utveckling i en tid när AI förändrar allt."
 pubDate: "May 02 2026"
 heroImage: "../../assets/images/blog/tillbaka-till-koden/tillbaka-till-koden.jpg"
