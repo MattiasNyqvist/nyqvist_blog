@@ -11,7 +11,7 @@ const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
-const lastPost = posts[0];
+const recentPosts = posts.slice(0, 3);
 ---
 
 <!doctype html>
@@ -25,26 +25,42 @@ const lastPost = posts[0];
       <Hero />
 
       {
-        lastPost ? (
-          <div class="latest-post fade-in">
-            <span class="post-tag">Senaste inlägget</span>
-            <div class="post-meta">
-              <FormattedDate date={lastPost.data.pubDate} />
+        recentPosts.length > 0 ? (
+          <div class="recent-posts fade-in">
+            <div class="section-header">
+              <span class="section-label">Senaste inläggen</span>
+              <a href="/blog/" class="all-posts-link">
+                Visa alla →
+              </a>
             </div>
-            <h2>{lastPost.data.title}</h2>
-            <p class="post-description">{lastPost.data.description}</p>
-            {lastPost.data.tags && lastPost.data.tags.length > 0 && (
-              <div class="tag-list">
-                {lastPost.data.tags.map((tag) => (
-                  <a href={`/tags/${tag}/`} class="tag">
-                    #{tag}
-                  </a>
-                ))}
-              </div>
-            )}
-            <a href={`/blog/${lastPost.id}/`} class="cta-button">
-              Läs inlägget →
-            </a>
+
+            <div class="post-list">
+              {recentPosts.map((post) => (
+                <div class="post-card">
+                  <div class="post-card-content">
+                    <div class="post-meta">
+                      <FormattedDate date={post.data.pubDate} />
+                    </div>
+                    <h2>{post.data.title}</h2>
+                    <p class="post-description">{post.data.description}</p>
+                    {post.data.tags && post.data.tags.length > 0 && (
+                      <div class="tag-list">
+                        {post.data.tags.map((tag) => (
+                          <a href={`/tags/${tag}/`} class="tag">
+                            #{tag}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div class="post-card-footer">
+                    <a href={`/blog/${post.id}/`} class="read-more">
+                      Läs inlägget →
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <p>Inga inlägg hittades ännu.</p>
@@ -71,23 +87,75 @@ const lastPost = posts[0];
     animation: fadeInUp 0.5s ease both;
   }
 
-  .latest-post {
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brand);
+  }
+
+  .all-posts-link {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--brand);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .all-posts-link:hover {
+    opacity: 0.7;
+  }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-card {
     background: var(--bg-card);
     border-left: 3px solid var(--brand);
     border-radius: 6px;
-    padding: 2.5rem 2.5rem 2.5rem 2rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 2rem 2.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    transition: box-shadow 0.2s ease;
+    margin-bottom: 1.25rem;
+  }
+
+  .post-card:last-child {
+    margin-bottom: 0;
+  }
+
+  .post-card:hover {
+    box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.12);
+  }
+
+  .post-card-content {
+    flex: 1;
+    min-width: 0;
   }
 
   .post-meta {
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     color: #6b7280;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
   }
 
-  .latest-post h2 {
-    margin: 0 0 1rem 0;
-    font-size: 1.4rem;
+  .post-card h2 {
+    margin: 0 0 0.6rem 0;
+    font-size: 1.2rem;
     font-weight: 500;
     color: #111827;
     line-height: 1.3;
@@ -95,24 +163,23 @@ const lastPost = posts[0];
 
   .post-description {
     color: #374151;
-    font-size: 0.97rem;
-    margin-bottom: 1.25rem;
-    line-height: 1.75;
+    font-size: 0.92rem;
+    margin: 0 0 0.9rem 0;
+    line-height: 1.7;
   }
 
   .tag-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.75rem;
+    gap: 0.4rem;
   }
 
   .tag {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 500;
     color: var(--brand);
     background: rgba(54, 117, 136, 0.08);
-    padding: 0.25rem 0.65rem;
+    padding: 0.2rem 0.55rem;
     border-radius: 999px;
     text-decoration: none;
     transition: background 0.2s ease;
@@ -123,31 +190,36 @@ const lastPost = posts[0];
     opacity: 1;
   }
 
-  .cta-button {
+  .post-card-footer {
+    flex-shrink: 0;
+  }
+
+  .read-more {
     display: inline-block;
-    padding: 0.65rem 1.5rem;
+    padding: 0.6rem 1.25rem;
     background: var(--brand);
-    border: none;
-    border-radius: 3px;
     color: #ffffff;
-    font-size: 0.85rem;
+    border-radius: 3px;
+    font-size: 0.82rem;
     font-weight: 500;
-    letter-spacing: 0.03em;
     text-decoration: none;
+    white-space: nowrap;
     transition: opacity 0.2s ease;
   }
 
-  .cta-button:hover {
+  .read-more:hover {
     opacity: 0.85;
   }
 
   @media (max-width: 720px) {
-    .latest-post {
-      padding: 1.5rem 1.25rem;
-      border-left-width: 2px;
+    .post-card {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 1.25rem;
+      gap: 1rem;
     }
 
-    .cta-button {
+    .read-more {
       width: 100%;
       text-align: center;
       box-sizing: border-box;
