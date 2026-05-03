@@ -11,9 +11,11 @@ type Props = {
   pubDate?: Date;
   updatedDate?: Date;
   heroImage?: any;
+  tags?: string[];
 };
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags } =
+  Astro.props;
 ---
 
 <html lang="sv">
@@ -28,6 +30,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 
       .hero-image {
         width: 100%;
+        padding-top: 2rem;
       }
 
       .hero-image img {
@@ -63,6 +66,29 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 
       .last-updated-on {
         font-style: italic;
+      }
+
+      .post-tags {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .tag {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--brand);
+        background: rgba(54, 117, 136, 0.08);
+        padding: 0.25rem 0.65rem;
+        border-radius: 999px;
+        text-decoration: none;
+        transition: background 0.2s ease;
+      }
+
+      .tag:hover {
+        background: rgba(54, 117, 136, 0.18);
       }
 
       @media (max-width: 720px) {
@@ -111,6 +137,17 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
               )
             }
             <h1>{title}</h1>
+            {
+              tags && tags.length > 0 && (
+                <div class="post-tags">
+                  {tags.map((tag) => (
+                    <a href={`/tags/${tag}/`} class="tag">
+                      #{tag}
+                    </a>
+                  ))}
+                </div>
+              )
+            }
             <hr />
           </div>
           <slot />

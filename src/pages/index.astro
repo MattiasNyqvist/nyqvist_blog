@@ -3,6 +3,7 @@ import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import Hero from "../components/Hero.astro";
+import FormattedDate from "../components/FormattedDate.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import { getCollection } from "astro:content";
 
@@ -27,6 +28,9 @@ const lastPost = posts[0];
         lastPost ? (
           <div class="latest-post fade-in">
             <span class="post-tag">Senaste inlägget</span>
+            <div class="post-meta">
+              <FormattedDate date={lastPost.data.pubDate} />
+            </div>
             <h2>{lastPost.data.title}</h2>
             <p class="post-description">{lastPost.data.description}</p>
             {lastPost.data.tags && lastPost.data.tags.length > 0 && (
@@ -75,8 +79,14 @@ const lastPost = posts[0];
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
 
+  .post-meta {
+    font-size: 0.78rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+  }
+
   .latest-post h2 {
-    margin: 0.5rem 0 1rem 0;
+    margin: 0 0 1rem 0;
     font-size: 1.4rem;
     font-weight: 500;
     color: #111827;
