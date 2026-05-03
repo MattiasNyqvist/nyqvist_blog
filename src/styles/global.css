@@ -91,14 +91,6 @@ li:last-child {
   border-bottom: none;
 }
 
-/* Cards – only sections, not blog post articles */
-section {
-  background: var(--bg-card);
-  padding: 4rem;
-  border-radius: 4px;
-  box-shadow: var(--card-shadow);
-}
-
 /* Labels */
 .hero-label,
 .post-tag {
@@ -119,10 +111,6 @@ section {
 @media (max-width: 720px) {
   main {
     margin: 1.5rem auto;
-  }
-
-  section {
-    padding: 2rem;
   }
 
   h1 {
