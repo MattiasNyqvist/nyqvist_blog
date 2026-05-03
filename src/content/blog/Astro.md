@@ -3,6 +3,7 @@ title: "Guide: Så skapar du en modern blogg helt gratis"
 description: "En steg-för-steg guide till hur jag satte upp min dev-blogg lokalt och publicerade den via GitHub och Azure Static Web Apps – inklusive editor, bilder och dagligt arbetsflöde."
 pubDate: "Apr 30 2026"
 heroImage: "../../assets/images/blog/astro/astro_hero.jpg"
+tags: ["astro", "azure", "webbutveckling"]
 ---
 Jag önskade ett eget hörn på nätet. Inte nödvändigtvis för att nå en stor publik, utan för att ha någonstans att skriva ner det man lär sig – och kanske slippa googla samma sak två gånger. Tänker även att det handlar om att dela med sig till andra.
 

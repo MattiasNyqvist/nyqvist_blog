@@ -1,0 +1,98 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+
+// Samla alla taggar och räkna förekomster
+const tagCounts: Record<string, number> = {};
+posts.forEach((post) => {
+  (post.data.tags ?? []).forEach((tag) => {
+    tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
+  });
+});
+
+const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+---
+
+<!doctype html>
+<html lang="sv">
+  <head>
+    <BaseHead title="Taggar" description="Alla taggar på Nyqvist Blogg" />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <h1>Taggar</h1>
+      <p class="intro">Bläddra bland inlägg efter ämne.</p>
+
+      <div class="tag-grid">
+        {
+          tags.map(([tag, count]) => (
+            <a href={`/tags/${tag}/`} class="tag-card">
+              <span class="tag-name">#{tag}</span>
+              <span class="tag-count">
+                {count} {count === 1 ? "inlägg" : "inlägg"}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  h1 {
+    font-size: 2rem;
+    font-weight: 300;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+
+  .intro {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .tag-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .tag-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.9rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .tag-card:hover {
+    border-color: var(--brand);
+    box-shadow: 0 2px 8px rgba(54, 117, 136, 0.12);
+    opacity: 1;
+  }
+
+  .tag-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--brand);
+  }
+
+  .tag-count {
+    font-size: 0.72rem;
+    color: #9ca3af;
+  }
+</style>

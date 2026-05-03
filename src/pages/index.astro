@@ -29,6 +29,15 @@ const lastPost = posts[0];
             <span class="post-tag">Senaste inlägget</span>
             <h2>{lastPost.data.title}</h2>
             <p class="post-description">{lastPost.data.description}</p>
+            {lastPost.data.tags && lastPost.data.tags.length > 0 && (
+              <div class="tag-list">
+                {lastPost.data.tags.map((tag) => (
+                  <a href={`/tags/${tag}/`} class="tag">
+                    #{tag}
+                  </a>
+                ))}
+              </div>
+            )}
             <a href={`/blog/${lastPost.id}/`} class="cta-button">
               Läs inlägget →
             </a>
@@ -77,8 +86,31 @@ const lastPost = posts[0];
   .post-description {
     color: #374151;
     font-size: 0.97rem;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.25rem;
     line-height: 1.75;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--brand);
+    background: rgba(54, 117, 136, 0.08);
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+
+  .tag:hover {
+    background: rgba(54, 117, 136, 0.18);
+    opacity: 1;
   }
 
   .cta-button {

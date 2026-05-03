@@ -1,0 +1,176 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+
+  const allTags = [...new Set(posts.flatMap((post) => post.data.tags ?? []))];
+
+  return allTags.map((tag) => ({
+    params: { tag },
+    props: {
+      posts: posts
+        .filter((post) => post.data.tags?.includes(tag))
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+    },
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<!doctype html>
+<html lang="sv">
+  <head>
+    <BaseHead
+      title={`#${tag}`}
+      description={`Inlägg taggade med ${tag} på Nyqvist Blogg`}
+    />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <div class="tag-header">
+        <a href="/tags/" class="back-link">← Alla taggar</a>
+        <h1>#{tag}</h1>
+        <p class="post-count">
+          {posts.length}
+          {posts.length === 1 ? "inlägg" : "inlägg"}
+        </p>
+      </div>
+
+      <ul class="post-list">
+        {
+          posts.map((post) => (
+            <li class="post-item">
+              <a href={`/blog/${post.id}/`} class="post-link">
+                <div class="post-meta">
+                  <FormattedDate date={post.data.pubDate} />
+                </div>
+                <h2 class="post-title">{post.data.title}</h2>
+                <p class="post-description">{post.data.description}</p>
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <div class="tag-list">
+                    {post.data.tags.map((t) => (
+                      <span class={`tag ${t === tag ? "tag-active" : ""}`}>
+                        #{t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .tag-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .back-link {
+    font-size: 0.82rem;
+    color: #6b7280;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: var(--brand);
+    opacity: 1;
+  }
+
+  .tag-header h1 {
+    font-size: 2rem;
+    font-weight: 300;
+    color: #111827;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .post-count {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    margin: 0;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .post-item {
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .post-item:last-child {
+    border-bottom: none;
+  }
+
+  .post-link {
+    display: block;
+    padding: 1.75rem 0;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s ease;
+  }
+
+  .post-link:hover {
+    opacity: 0.8;
+  }
+
+  .post-meta {
+    font-size: 0.78rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+  }
+
+  .post-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #111827;
+    margin: 0 0 0.6rem 0;
+    line-height: 1.3;
+  }
+
+  .post-description {
+    font-size: 0.95rem;
+    color: #374151;
+    line-height: 1.7;
+    margin: 0 0 1rem 0;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--brand);
+    background: rgba(54, 117, 136, 0.08);
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+  }
+
+  .tag-active {
+    background: rgba(54, 117, 136, 0.2);
+    font-weight: 700;
+  }
+</style>
