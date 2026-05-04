@@ -5,7 +5,9 @@ pubDate: 2026-05-03
 heroImage: "../../assets/images/blog/git/hero_git.jpg"
 tags: ["git", "cli", "version-control", "tutorial"]
 ---
-När man kodar finns det både en och två gånger som man ångrar det ändring man gjorde och vill backa tillbaka till när det fungerade sist. Är är Git ett av de viktigaste verktygen i en koadres vardag. Den här guiden tar dig igenom allt du behöver för att arbeta med Git via terminalen (CLI) – från allra första steget till ett väloljat arbetsflöde med branches och GitHub.
+När man kodar finns det både en och två gånger som man ångrar det ändring man gjorde och vill backa tillbaka till när det sist fungerade. Därr är Git ett viktigaste verktygen. 
+
+Den här guiden tar dig igenom allt du behöver för att arbeta med Git via terminalen (CLI) – från allra första steget till ett väloljat arbetsflöde med branches och GitHub.
 
 Vi utgår från att du redan har Git installerat. Kör `git --version` i terminalen för att bekräfta det.
 

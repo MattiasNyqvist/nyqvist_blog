@@ -1,13 +1,17 @@
----
 title: "Guide: Så skapar du en modern blogg helt gratis"
 description: "En steg-för-steg guide till hur jag satte upp min dev-blogg lokalt och publicerade den via GitHub och Azure Static Web Apps – inklusive editor, bilder och dagligt arbetsflöde."
 pubDate: 2026-04-30
 heroImage: "../../assets/images/blog/astro/astro_hero.jpg"
 tags: ["astro", "azure", "webbutveckling"]
----
+------------------------------------------
+
 Jag önskade ett eget hörn på nätet. Inte nödvändigtvis för att nå en stor publik, utan för att ha någonstans att skriva ner det man lär sig – och kanske slippa googla samma sak två gånger. Tänker även att det handlar om att dela med sig till andra.
 
-Jag ville ha något snabbt, versionshanterat och gratis att driva. Valet föll på **Astro** i kombination med **Azure Static Web Apps** med en automatisk pipeline via **GitHub** som sköter publiceringen
+Jag har satt ihop fler Word Press sidor men vill här tänka lite annorlunda.
+
+Jag ville ha något snabbt, versionshanterat och gratis att driva. Valet föll på **Astro** i kombination med **Azure Static Web Apps** med en automatisk pipeline via **GitHub** som sköter publiceringen.
+
+Här följer en guide hur du själv sätter upp din egna Astro-sida.
 
 ## Förutsättningar
 
@@ -23,12 +27,14 @@ Innan du kör igång behöver du ha följande på plats:
 
 Öppna terminalen och kör:
 
+Det finns mallar att ladda ner från [astro.build/themes](https://astro.build/themes).
+
 ```bash
 # Initialize a new Astro project
 npm create astro@latest
 ```
 
-Välj den inbyggda **Blog**-mallen och låt guiden installera beroendena. Sen startar du den lokala servern:
+Vi väljer den inbyggda **Blog**-mallen och låt guiden installera beroendena. Sen startar du den lokala servern:
 
 ```bash
 # Start local development server
@@ -148,23 +154,30 @@ Det här är den del som brukar ställa till det. Astro har **två platser** fö
 
 ### Snabbreferens
 
+**Hero image (frontmatter)**
+Mapp: `src/assets/images/blog/mitt-inlagg/hero.jpg`
+Referens: `heroImage: "../../assets/images/blog/mitt-inlagg/hero.jpg"`
 
-| What                     | Folder                                          | Reference                                                    |
-| -------------------------- | ------------------------------------------------- | -------------------------------------------------------------- |
-| Hero image (frontmatter) | `src/assets/images/blog/mitt-inlagg/hero.jpg`   | `heroImage: "../../assets/images/blog/mitt-inlagg/hero.jpg"` |
-| Image in post body       | `public/images/blog/mitt-inlagg/screenshot.jpg` | `![alt text](/images/blog/mitt-inlagg/screenshot.jpg)`       |
-| Logo, favicon            | `public/logo.svg`                               | `src="/logo.svg"`                                            |
+**Image in post body**
+Mapp: `public/images/blog/mitt-inlagg/screenshot.jpg`
+Referens: `![alt text](/images/blog/mitt-inlagg/screenshot.jpg)`
 
-Hero måste ligga i src/assets/ på grund av <Image />-komponenten. Brödtextbilder i public/ är ett aktivt val för enkelhetens skull – inte ett krav.
+**Logo, favicon**
+Mapp: `public/logo.svg`
+Referens: `src="/logo.svg"`
+
+Hero måste ligga i `src/assets/` på grund av `<Image />`-komponenten. Brödtextbilder i `public/` är ett aktivt val för enkelhetens skull – inte ett krav.
 
 ### Rekommenderade format och storlekar
 
+**Hero**
+Storlek: 1200 × 630 px | Format: `.webp` / `.jpg` | Max: 200 KB
 
-| Image type              | Size            | Format           | Max file size |
-| ------------------------- | ----------------- | ------------------ | --------------- |
-| Hero                    | 1200 × 630 px  | `.webp` / `.jpg` | 200 KB        |
-| Screenshot in post body | max 800 px wide | `.webp` / `.png` | 100 KB        |
-| Logo                    | any             | `.svg`           | —            |
+**Screenshot in post body**
+Storlek: max 800 px wide | Format: `.webp` / `.png` | Max: 100 KB
+
+**Logo**
+Storlek: valfri | Format: `.svg`
 
 Komprimera bilderna med [Squoosh](https://squoosh.app/) innan du lägger dem i projektet – det är gratis och fungerar direkt i webbläsaren.
 

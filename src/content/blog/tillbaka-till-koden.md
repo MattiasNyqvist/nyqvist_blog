@@ -5,13 +5,11 @@ pubDate: 2026-05-02
 heroImage: "../../assets/images/blog/tillbaka-till-koden/tillbaka-till-koden.jpg"
 tags: ["ai", "utveckling", "reflektion"]
 ---
-För ungefär en månad sedan klev jag av rollen som chef.
-
-Inte för att det inte var en utvecklande och intressant roll, utan för att något annat hade dragit i mig under lång tid. Det hade legat på bordet länge – i samtal både hemma och på jobbet – och till slut var det inte längre en fråga om att fundera, utan om att faktiskt göra något. Nu söker jag mig tillbaka till utveckling.
+För ungefär en månad sedan klev jag av rollen som chef för att söka mig tillbaka till utvecklarrollen.
 
 Det är ett steg in i något bekant, men långt ifrån ett oförändrat område. Jag har hållit mig nära tekniken hela tiden, men det är en sak att leda arbete och en annan att sitta i det själv. Att prata om arkitektur kontra att bygga den. Att peka ut riktningen kontra att lösa detaljerna.
 
-Och branschen är inte densamma som den jag lämnade för tio år sedan.
+Och branschen är inte densamma som den jag lämnade för tio år sedan. Mycket har förändrats, men jag tänker att inget har skakat om spelplanen så mycket som AI.
 
 ## AI är inte längre något vid sidan av
 
@@ -19,9 +17,7 @@ Det är ett verktyg som redan påverkar hur vi skriver kod, hur vi lär oss och 
 
 Vi har sett liknande skiften förut. Från assembler till högnivåspråk, från manuellt till automatiserat, från lågnivådetaljer till högre abstraktioner. Som jag ser det är AI samma typ av skifte, bara snabbare och större.
 
-Jag tror inte att det är utvecklingen i sig själv som försvinner – det är silorna. De gränser som vuxit fram när specialisering och komplexitet gjort det möjligt att stanna i sitt område utan att behöva bry sig om helheten. Det är inte nytt tänkande att ifrågasätta det – domändriven design har i grunden alltid handlat om att förstå *varför* man bygger något, inte bara *hur* (Eric Evans, *Domain-Driven Design* , 2003). Men när AI tar hand om mer av det mekaniska blir frågan svårare att ducka för.
-
-Det påverkar inte bara hur vi jobbar – det påverkar hur många händer som behövs. Min bild är att om en person med AI-stöd kan producera det som tidigare krävde till exempel tre utvecklare, minskar inte behovet av utvecklare som profession – WEF:s *Future of Jobs Report 2025* listar faktiskt mjukvaruutvecklare som fjärde snabbast växande yrke globalt. Men behovet av den som *enbart* skriver rader gör det (McKinsey Global Institute, *A New Future of Work* , 2024). Det som växer i värde, som jag ser det, är förmågan att förstå varför systemet finns, vad det faktiskt ska lösa och vad som händer när det inte gör det – när produktionssystemet ligger nere klockan tre på natten, kunderna inte kan logga in och någon måste förstå tillräckligt mycket för att både felsöka och förklara. Det är inte kod AI skriver som avgör den stunden. Det är omdömet hos den som sitter vid tangentbordet.
+Jag tror inte att det är utvecklingen i sig själv som försvinner. Det är silorna och fokusområdena. De gränser som vuxit fram när specialisering och komplexitet gjort det möjligt att stanna i sitt område utan att behöva förhålla sig till helheten. I många organisationer är det dessutom så det är tänkt att fungera; utvecklaren plockar nästa Jira-kort, kravspecen kommer från ett håll och arkitekturen från ett annat. Det är inte nytt tänkande att ifrågasätta det. Domändriven design har i grunden alltid handlat om att förstå *varför* man bygger något, inte bara *hur* (Eric Evans, *Domain-Driven Design* , 2003). Men när AI tar hand om mer av det mekaniska blir frågan svårare att ducka för.
 
 ## Lärandet förändras också
 
@@ -33,7 +29,9 @@ Det öppnar upp på sätt vi kanske inte pratar tillräckligt mycket om. Jag är
 
 ## Vem som egentligen är i riskzonen
 
-Som jag tolkar det ligger de roller som är mest utsatta bland de som bygger på repetitiva, lätt specificerade uppgifter. I teknikvärlden handlar det inte om att utvecklare försvinner – det handlar om att rollen förändras. Den som kan granska, designa, kommunicera och hålla ihop tekniken med verksamheten är mer relevant än den som bara producerar kod.
+Förändringen påverkar inte bara hur vi jobbar – den påverkar hur många händer som behövs. Min bild är att om en person med AI-stöd kan producera det som tidigare krävde till exempel tre utvecklare, minskar inte behovet av utvecklare som profession – WEF:s *Future of Jobs Report 2025* listar faktiskt mjukvaruutvecklare som fjärde snabbast växande yrke globalt. Men behovet av den som *enbart* skriver rader gör det (McKinsey Global Institute, *A New Future of Work* , 2024).
+
+Som jag tolkar det ligger de roller som är mest utsatta bland de som bygger på repetitiva, lätt specificerade uppgifter. Det som växer i värde är förmågan att förstå varför systemet finns, vad det faktiskt ska lösa och vad som händer när det inte gör det – när produktionssystemet ligger nere klockan tre på natten, kunderna inte kan logga in och någon måste förstå tillräckligt mycket för att både felsöka och förklara. Det är inte kod AI skriver som avgör den stunden. Det är omdömet hos den som sitter vid tangentbordet.
 
 Det är nog därför min bakgrund känns rätt just nu. Sexton år som utvecklare och tio år i ledarskap är inte två separata spår – det är en kombination som blir mer intressant när AI förskjuter värdet från kodproduktion mot omdöme, riktning och förståelse.
 
