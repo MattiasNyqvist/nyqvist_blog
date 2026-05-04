@@ -1,7 +1,7 @@
 ---
 title: "Git via CLI – en praktisk guide från setup till rollback"
 description: "En genomgång av hur du arbetar med Git i terminalen. Från att sätta upp din identitet till att hantera branches, pusha till GitHub och rulla tillbaka misstag."
-pubDate: 2025-05-03
+pubDate: 2026-05-03
 heroImage: "../../assets/images/blog/git/hero_git.jpg"
 tags: ["git", "cli", "version-control", "tutorial"]
 ---

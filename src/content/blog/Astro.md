@@ -1,7 +1,7 @@
 ---
 title: "Guide: Så skapar du en modern blogg helt gratis"
 description: "En steg-för-steg guide till hur jag satte upp min dev-blogg lokalt och publicerade den via GitHub och Azure Static Web Apps – inklusive editor, bilder och dagligt arbetsflöde."
-pubDate: "Apr 30 2026"
+pubDate: 2026-04-30
 heroImage: "../../assets/images/blog/astro/astro_hero.jpg"
 tags: ["astro", "azure", "webbutveckling"]
 ---
