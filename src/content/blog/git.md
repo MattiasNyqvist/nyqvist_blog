@@ -5,10 +5,9 @@ pubDate: 2026-05-03
 heroImage: "../../assets/images/blog/git/hero_git.jpg"
 tags: ["git", "cli", "version-control", "tutorial"]
 ---
+När man kodar finns det både en och två gånger som man ångrar det ändring man gjorde och vill backa tillbaka till när det fungerade sist. Är är Git ett av de viktigaste verktygen i en koadres vardag. Den här guiden tar dig igenom allt du behöver för att arbeta med Git via terminalen (CLI) – från allra första steget till ett väloljat arbetsflöde med branches och GitHub.
 
-Git är ett av de viktigaste verktygen i en utvecklares vardag, men det kan kännas överväldigande i början. Den här guiden tar dig igenom allt du behöver för att arbeta med Git via terminalen – från allra första steget till ett väloljat arbetsflöde med branches och GitHub.
-
-Vi utgår från att du redan har Git installerat. Kör `git --version` för att bekräfta det.
+Vi utgår från att du redan har Git installerat. Kör `git --version` i terminalen för att bekräfta det.
 
 ---
 
@@ -17,7 +16,7 @@ Vi utgår från att du redan har Git installerat. Kör `git --version` för att 
 Innan du gör din första commit behöver Git veta vem du är. Det här konfigureras globalt, vilket innebär att det gäller för alla dina repos på datorn och lagras i filen `~/.gitconfig`.
 
 ```bash
-git config --global user.name "Mattias Nyqvist"
+git config --global user.name "John Doe"
 git config --global user.email "din@email.com"
 ```
 
@@ -186,7 +185,7 @@ Ditt lokala repo och GitHub är separata saker. Du kopplar ihop dem med en **rem
 Skapa först ett tomt repo på GitHub (utan README, .gitignore eller licens om du redan har dem lokalt), och kör sedan:
 
 ```bash
-git remote add origin https://github.com/MattiasNyqvist/repo-namn.git
+git remote add origin https://github.com/JohnDoe/repo-namn.git
 ```
 
 `origin` är det konventionella standardnamnet för din remote. Kolla att det är rätt:
@@ -198,7 +197,7 @@ git remote -v
 Behöver du byta URL – t.ex. om du bytt repo-namn:
 
 ```bash
-git remote set-url origin https://github.com/MattiasNyqvist/nytt-namn.git
+git remote set-url origin https://github.com/JohnDoe/nytt-namn.git
 ```
 
 ### Klona ett befintligt repo
@@ -206,13 +205,13 @@ git remote set-url origin https://github.com/MattiasNyqvist/nytt-namn.git
 Om repot redan finns på GitHub och du vill hämta hem det:
 
 ```bash
-git clone https://github.com/MattiasNyqvist/repo-namn.git
+git clone https://github.com/JohnDoe/repo-namn.git
 ```
 
 Remote sätts automatiskt till `origin`. Vill du ha ett annat mappnamn lokalt:
 
 ```bash
-git clone https://github.com/MattiasNyqvist/repo-namn.git mitt-mappnamn
+git clone https://github.com/JohnDoe/repo-namn.git mitt-mappnamn
 ```
 
 ### Autentisering
@@ -438,4 +437,4 @@ git branch -d feature/rapport-export
 
 ---
 
-Det tar ett tag att bygga muskelminne för Git-kommandon, men arbetsflödet ovan täcker 90% av det du stöter på i vardagen. Resten hittar du när du behöver det.
+Att komma ihåg allt och när man skall använda det kan vara en liten utmaning i början. Många av de verktyg som finns för utveckalre har grafiska gränssnitt för hantering av Git. Det hä arbetsflödet ovan täcker dock 90% av det du stöter på i vardagen. Resten hittar du när du behöver det.
