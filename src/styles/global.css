@@ -12,9 +12,12 @@
   --gray-light: #f0f4f5;
 }
 
-html, body {
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
   overflow-x: hidden;
-  width: 100%;
 }
 
 body {
@@ -28,6 +31,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 main {
@@ -35,7 +40,7 @@ main {
   width: 100%;
   max-width: 960px;
   margin: 4rem auto;
-  padding: 0 1.5rem;
+  padding: 0 2rem;
 }
 
 /* Typography */
