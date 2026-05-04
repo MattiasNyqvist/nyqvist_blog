@@ -9,6 +9,11 @@ import { getCollection } from "astro:content";
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+const PAGE_SIZE = 6;
+const currentPage = 1;
+const totalPages = Math.ceil(posts.length / PAGE_SIZE);
+const pagePosts = posts.slice(0, PAGE_SIZE);
 ---
 
 <!doctype html>
@@ -26,7 +31,7 @@ const posts = (await getCollection("blog")).sort(
 
       <ul class="post-grid">
         {
-          posts.map((post) => (
+          pagePosts.map((post) => (
             <li class="post-item">
               <a href={`/blog/${post.id}/`} class="post-link">
                 <div class="post-image">
@@ -61,6 +66,19 @@ const posts = (await getCollection("blog")).sort(
           ))
         }
       </ul>
+
+      {
+        totalPages > 1 && (
+          <div class="pagination">
+            <span class="pagination-info">
+              Sida {currentPage} av {totalPages}
+            </span>
+            <a href="/blog/2/" class="pagination-next">
+              Nästa sida →
+            </a>
+          </div>
+        )
+      }
     </main>
     <Footer />
   </body>
@@ -94,7 +112,6 @@ const posts = (await getCollection("blog")).sort(
     opacity: 0.7;
   }
 
-  /* Grid – 2 kolumner på desktop */
   .post-grid {
     list-style: none;
     padding: 0;
@@ -200,7 +217,33 @@ const posts = (await getCollection("blog")).sort(
     border-radius: 999px;
   }
 
-  /* Mobil – 1 kolumn */
+  /* Paginering */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .pagination-info {
+    font-size: 0.85rem;
+    color: #6b7280;
+  }
+
+  .pagination-next {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--brand);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .pagination-next:hover {
+    opacity: 0.7;
+  }
+
   @media (max-width: 720px) {
     .post-grid {
       grid-template-columns: 1fr;
