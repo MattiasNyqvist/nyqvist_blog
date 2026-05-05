@@ -1,9 +1,10 @@
+---
 title: "Guide: Så skapar du en modern blogg helt gratis"
 description: "En steg-för-steg guide till hur jag satte upp min dev-blogg lokalt och publicerade den via GitHub och Azure Static Web Apps – inklusive editor, bilder och dagligt arbetsflöde."
 pubDate: 2026-04-30
-heroImage: "../../assets/images/blog/astro/astro_hero.jpg"
+heroImage: "../../assets/images/blog/astro/hero-astro.jpg"
 tags: ["astro", "azure", "webbutveckling"]
-------------------------------------------
+---
 
 Jag önskade ett eget hörn på nätet. Inte nödvändigtvis för att nå en stor publik, utan för att ha någonstans att skriva ner det man lär sig – och kanske slippa googla samma sak två gånger. Tänker även att det handlar om att dela med sig till andra.
 
@@ -102,11 +103,11 @@ Varje inlägg är en Markdown-fil. Du skriver lokalt, commitar till GitHub och A
 [Visual Studio Code](https://code.visualstudio.com/) är det självklara valet. Några tillägg gör skillnad:
 
 
-| Tillägg                | Vad det gör                                      |
-| ------------------------- | --------------------------------------------------- |
+| Tillägg | Vad det gör |
+| :--- | :--- |
 | **Markdown All in One** | Förhandsvisning, genvägar och table of contents |
-| **markdownlint**        | Flaggar formateringsfel i realtid                 |
-| **Astro**               | Syntax-highlighting för`.astro`-filer            |
+| **markdownlint** | Flaggar formateringsfel i realtid |
+| **Astro** | Syntax-highlighting för `.astro`-filer |
 
 Förhandsgranska Markdown-filen med `Ctrl + Shift + V` (eller `Cmd + Shift + V` på Mac).
 

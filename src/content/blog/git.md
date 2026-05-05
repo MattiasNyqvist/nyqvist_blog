@@ -2,7 +2,7 @@
 title: "Git via CLI – en praktisk guide från setup till rollback"
 description: "En genomgång av hur du arbetar med Git i terminalen. Från att sätta upp din identitet till att hantera branches, pusha till GitHub och rulla tillbaka misstag."
 pubDate: 2026-05-03
-heroImage: "../../assets/images/blog/git/hero_git.jpg"
+heroImage: "../../assets/images/blog/git/hero-git.jpg"
 tags: ["git", "cli", "version-control", "tutorial"]
 ---
 När man kodar finns det både en och två gånger som man ångrar det ändring man gjorde och vill backa tillbaka till när det sist fungerade. Därr är Git ett viktigaste verktygen. 
