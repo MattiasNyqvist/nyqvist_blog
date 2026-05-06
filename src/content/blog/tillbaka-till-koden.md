@@ -1,11 +1,11 @@
 ---
 title: "Tillbaka till koden i en bransch som förändrats"
 description: "För en månad sedan klev jag av rollen som chef. Det här är mina tankar om vad det innebär att komma tillbaka till utveckling i en tid när AI förändrar allt."
-pubDate: 2026-05-02
+pubDate: 2026-04-01
 heroImage: "../../assets/images/blog/tillbaka-till-koden/hero-tillbaka-till-koden.jpg"
 tags: ["ai", "utveckling", "reflektion"]
 ---
-För ungefär en månad sedan klev jag av rollen som chef för att söka mig tillbaka till utvecklarrollen.
+Efter tio år i ledarskapsroller har jag bestämt mig för att kliva närmare tekniken igen. Framtiden får utvisa vart det tar vägen, men just nu vill jag vara nära koden, nära problemen och nära själva skapandet.
 
 Det är ett steg in i något bekant, men långt ifrån ett oförändrat område. Jag har hållit mig nära tekniken hela tiden, men det är en sak att leda arbete och en annan att sitta i det själv. Att prata om arkitektur kontra att bygga den. Att peka ut riktningen kontra att lösa detaljerna.
 

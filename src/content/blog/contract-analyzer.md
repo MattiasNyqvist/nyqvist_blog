@@ -2,7 +2,7 @@
 title: "AI som motor – och vart det är på väg"
 description: "Jag kan bygga saker på ett par timmar som tidigare skulle ha 
 tagit ett team veckor. Det är inte bara snabbare. Det förändrar hur jag tänker."
-pubDate: 2026-05-05
+pubDate: 2026-04-05
 heroImage: "../../assets/images/blog/contract-analyzer/hero-contract-analyzer.jpg"
 tags: ["ai", "reflektion", "utveckling"]
 ---

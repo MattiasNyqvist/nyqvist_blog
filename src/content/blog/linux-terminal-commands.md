@@ -1,7 +1,7 @@
 ---
 title: "Linux i terminalen – kommandon du faktiskt använder"
 description: "En bred referens över de kommandon du stöter på i vardagen – organiserad efter situation, inte kommandonamn."
-pubDate: 2026-05-05
+pubDate: 2026-04-26
 heroImage: "../../assets/images/blog/linux-terminal-commands/hero-linux-terminal-commands.jpg"
 tags: ["linux", "cli", "terminal", "tutorial"]
 ---
