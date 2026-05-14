@@ -70,6 +70,7 @@ const pagePosts = posts.slice(0, PAGE_SIZE);
       {
         totalPages > 1 && (
           <div class="pagination">
+            <span />
             <span class="pagination-info">
               Sida {currentPage} av {totalPages}
             </span>
@@ -232,7 +233,8 @@ const pagePosts = posts.slice(0, PAGE_SIZE);
     color: #6b7280;
   }
 
-  .pagination-next {
+  .pagination-next,
+  .pagination-prev {
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--brand);
@@ -240,7 +242,8 @@ const pagePosts = posts.slice(0, PAGE_SIZE);
     transition: opacity 0.2s ease;
   }
 
-  .pagination-next:hover {
+  .pagination-next:hover,
+  .pagination-prev:hover {
     opacity: 0.7;
   }
 

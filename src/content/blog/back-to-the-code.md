@@ -2,7 +2,7 @@
 title: "Tillbaka till koden i en bransch som förändrats"
 description: "För en månad sedan klev jag av rollen som chef. Det här är mina tankar om vad det innebär att komma tillbaka till utveckling i en tid när AI förändrar allt."
 pubDate: 2026-04-01
-heroImage: "../../assets/images/blog/tillbaka-till-koden/hero-tillbaka-till-koden.jpg"
+heroImage: "../../assets/images/blog/back-to-the-code/hero-back-to-the-code.jpg"
 tags: ["ai", "utveckling", "reflektion"]
 ---
 Efter tio år i ledarskapsroller har jag bestämt mig för att kliva närmare tekniken igen. Framtiden får utvisa vart det tar vägen, men just nu vill jag vara nära koden, nära problemen och nära själva skapandet.
