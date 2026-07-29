@@ -45,40 +45,45 @@ Any static assets, like images, can be placed in the `public/` directory.
 
 All commands are run from the root of the project, from a terminal:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+
+| Command                   | Action                                          |
+| :------------------------ | :---------------------------------------------- |
+| `npm install`             | Installs dependencies                           |
+| `npm run dev`             | Starts local dev server at`localhost:4321`      |
+| `npm run build`           | Build your production site to`./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying    |
+| `npm run astro ...`       | Run CLI commands like`astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                    |
 
 ## ✍️ Publishing a new post
 
 A quick checklist for adding a new article to the blog.
 
-### 1. Write the text
+First find out the name for your post e.g. **my-content**
 
-Create a Markdown file, for example `my-content.md`.
+## 1. Prepare the hero image
 
-### 2. Prepare the hero image
-
-Export a `.jpg` at 1200 × 630 px and give it the same name as the post, for example `my-content.jpg`. Compress it (e.g. with [Squoosh](https://squoosh.app/)) to keep it under 200 KB.
-
-### 3. Create a folder for the image
-
-Add a folder named after the post under `src/assets/images/blog/`:
+Create a folder for your post under `src/assets/images/blog/`:
 
 ```text
 src/assets/images/blog/my-content/my-content.jpg
 ```
 
-The hero image must live in `src/assets/` because it is handled by Astro's `<Image />` component at build time.
+Export the image as a `.jpg` in `1200 × 630 px`.
+This size works well for Open Graph and social sharing previews.
 
-### 4. Add the frontmatter
+Compress the image with a tool such as Squoosh and keep it under `200 KB`.
+Store the file inside `src/assets/` so Astro's `<Image />` component can process it at build time.
 
-Place this at the top of your `.md` file:
+## 2. Create the blog post
+
+Create a new file here:
+
+```text
+src/content/blog/my-content.md
+```
+
+Add this frontmatter:
 
 ```markdown
 ---
@@ -90,21 +95,19 @@ tags: ["ai", "claude"]
 ---
 ```
 
-### 5. Move the post into the collection
+The `heroImage` path is relative to the markdown file.
 
-```text
-src/content/blog/my-content.md
-```
+## 3. Run and preview locally
 
-### 6. Preview locally
+Start the development server:
 
 ```sh
 npm run dev
 ```
 
-Open `http://localhost:4321` and check that the hero image renders and that the post shows up in the list.
+Open `http://localhost:4321` and verify that:
 
-### 7. Push to GitHub
+### 4. Push to GitHub
 
 ```sh
 git add .
