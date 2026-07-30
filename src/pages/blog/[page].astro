@@ -8,7 +8,7 @@ import { getCollection } from "astro:content";
 
 export async function getStaticPaths() {
   const posts = (await getCollection("blog")).sort(
-    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
   );
   const PAGE_SIZE = 6;
   const totalPages = Math.ceil(posts.length / PAGE_SIZE);
@@ -32,7 +32,10 @@ const { pagePosts, currentPage, totalPages } = Astro.props;
 <!doctype html>
 <html lang="sv">
   <head>
-    <BaseHead title={`Inlägg – sida ${currentPage}`} description="Alla inlägg på Nyqvist Blogg" />
+    <BaseHead
+      title={`Inlägg – sida ${currentPage}`}
+      description="Alla inlägg på Nyqvist Blogg"
+    />
   </head>
   <body>
     <Header />
@@ -135,7 +138,7 @@ const { pagePosts, currentPage, totalPages } = Astro.props;
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
   }
 
