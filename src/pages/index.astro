@@ -2,43 +2,132 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import Hero from "../components/Hero.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import { Image } from "astro:assets";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import { getCollection } from "astro:content";
 
-const posts = (await getCollection("blog")).sort(
+// Hämta och sortera inlägg
+const allPosts = (await getCollection("blog")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
-const PAGE_SIZE = 6;
-const totalPages = Math.ceil(posts.length / PAGE_SIZE);
-const recentPosts = posts.slice(0, PAGE_SIZE);
+// Det nyaste inlägget blir "Hero", resten hamnar i listan
+const latestPost = allPosts[0];
+const otherPosts = allPosts.slice(1, 7);
+
+// Extrahera unika taggar för att skapa en tagg-bar
+const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags || []))];
 ---
 
 <!doctype html>
 <html lang="sv">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead
+      title="Mattias Nyqvist – Utvecklare, ledare och nyfiken"
+      description="Ett öppet anteckningsblock från en vetgirig utvecklare."
+    />
   </head>
   <body>
     <Header />
     <main>
-      <Hero />
+      <!-- Profilsektion -->
+      <section class="profile-section">
+        <div class="profile-text">
+          <div class="profile-tags">
+            <span>UTVECKLARE</span> • <span>LEDARE</span> • <span
+              >IT-ERFARENHET</span
+            > • <span>NYFIKENHET</span>
+          </div>
+          <h1>Mattias Nyqvist</h1>
+          <p>
+            Ett öppet anteckningsblock från en vetgirig utvecklare. Här landar
+            det jag håller på med, testar och tänker på – ibland djupdykningar i
+            teknik, ibland något helt annat.
+          </p>
+        </div>
+        <div class="profile-avatar-container">
+          <!-- Byt ut src mot din faktiska bildfil i mappen public -->
+          <Image
+            src="/images/mattias.jpg"
+            alt="Mattias Nyqvist"
+            width={160}
+            height={160}
+            class="profile-avatar"
+          />
+        </div>
+      </section>
 
+      <!-- TAGG-BAR: Gör det levande och lätt att navigera -->
       {
-        recentPosts.length > 0 ? (
-          <div class="recent-posts fade-in">
+        allTags.length > 0 && (
+          <section class="tag-bar-section">
+            <span class="tag-bar-label">Utforska ämnen:</span>
+            <div class="tag-bar-list">
+              {allTags.map((tag) => (
+                <a href={`/tags/${tag.toLowerCase()}/`} class="tag-pill">
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      <!-- HUVUDINLÄGG: HERO-KORT (Det senaste inlägget) -->
+      {
+        latestPost && (
+          <section class="hero-post-section">
             <div class="section-header">
-              <span class="section-label">Senaste inläggen</span>
-              <a href="/tags/" class="all-posts-link">
-                Bläddra bland taggar →
+              <h2>Senaste inlägget</h2>
+            </div>
+            <article class="hero-card">
+              <a href={`/blog/${latestPost.id}/`} class="hero-link">
+                <div class="hero-image-wrapper">
+                  {latestPost.data.heroImage ? (
+                    <Image
+                      src={latestPost.data.heroImage}
+                      alt={latestPost.data.title}
+                      width={1200}
+                      height={600}
+                      class="hero-img"
+                    />
+                  ) : (
+                    <div class="post-img-placeholder" />
+                  )}
+                </div>
+                <div class="hero-content">
+                  <div class="post-meta">
+                    <FormattedDate date={latestPost.data.pubDate} />
+                  </div>
+                  <h3 class="hero-title">{latestPost.data.title}</h3>
+                  <p class="hero-description">{latestPost.data.description}</p>
+                  {latestPost.data.tags && latestPost.data.tags.length > 0 && (
+                    <div class="tag-list">
+                      {latestPost.data.tags.map((tag) => (
+                        <span class="tag">#{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </a>
+            </article>
+          </section>
+        )
+      }
+
+      <!-- FLER INLÄGG: 3-KOLUMNSRUTIN -->
+      {
+        otherPosts.length > 0 && (
+          <section class="older-posts-section">
+            <div class="section-header">
+              <h2>Fler anteckningar</h2>
+              <a href="/blog/2/" class="all-tags-link">
+                Bläddra bland alla inlägg →
               </a>
             </div>
 
             <ul class="post-grid">
-              {recentPosts.map((post) => (
+              {otherPosts.map((post) => (
                 <li class="post-item">
                   <a href={`/blog/${post.id}/`} class="post-link">
                     <div class="post-image">
@@ -58,14 +147,12 @@ const recentPosts = posts.slice(0, PAGE_SIZE);
                       <div class="post-meta">
                         <FormattedDate date={post.data.pubDate} />
                       </div>
-                      <h2 class="post-title">{post.data.title}</h2>
+                      <h3 class="post-title">{post.data.title}</h3>
                       <p class="post-description">{post.data.description}</p>
                       {post.data.tags && post.data.tags.length > 0 && (
                         <div class="tag-list">
                           {post.data.tags.map((tag) => (
-                            <a href={`/tags/${tag}/`} class="tag">
-                              #{tag}
-                            </a>
+                            <span class="tag">#{tag}</span>
                           ))}
                         </div>
                       )}
@@ -74,18 +161,7 @@ const recentPosts = posts.slice(0, PAGE_SIZE);
                 </li>
               ))}
             </ul>
-            {totalPages > 1 && (
-              <div class="pagination">
-                <span />
-                <span class="pagination-info">Sida 1 av {totalPages}</span>
-                <a href="/blog/2/" class="pagination-next">
-                  Nästa sida →
-                </a>
-              </div>
-            )}
-          </div>
-        ) : (
-          <p>Inga inlägg hittades ännu.</p>
+          </section>
         )
       }
     </main>
@@ -94,73 +170,215 @@ const recentPosts = posts.slice(0, PAGE_SIZE);
 </html>
 
 <style>
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* Grundlayout och profildel */
+  .profile-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e7eb;
   }
 
-  .fade-in {
-    animation: fadeInUp 0.5s ease both;
+  .profile-tags {
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .profile-text h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: #111827;
+    margin: 0 0 1rem 0;
+  }
+
+  .profile-text p {
+    font-size: 1.05rem;
+    color: #374151;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 600px;
+  }
+
+  .profile-avatar-container {
+    flex-shrink: 0;
+  }
+
+  .profile-avatar {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Tagg-bar */
+  .tag-bar-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .tag-bar-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4b5563;
+  }
+
+  .tag-bar-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag-pill {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--brand, #367588);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .tag-pill:hover {
+    background: var(--brand, #367588);
+    color: #ffffff;
+    border-color: var(--brand, #367588);
+    transform: translateY(-1px);
   }
 
   .section-header {
     display: flex;
-    align-items: baseline;
     justify-content: space-between;
+    align-items: baseline;
     margin-bottom: 1.5rem;
   }
 
-  .section-label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--brand);
+  .section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #111827;
+    margin: 0;
   }
 
-  .all-posts-link {
+  .all-tags-link {
     font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--brand);
+    color: var(--brand, #367588);
     text-decoration: none;
-    transition: opacity 0.2s ease;
+    font-weight: 500;
   }
 
-  .all-posts-link:hover {
+  .all-tags-link:hover {
     opacity: 0.7;
   }
 
-  /* Grid – 2 kolumner på desktop */
+  /* HERO-KORT */
+  .hero-post-section {
+    margin-bottom: 3rem;
+  }
+
+  .hero-card {
+    background: #ffffff;
+    border-left: 4px solid var(--brand, #367588);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .hero-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .hero-link {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .hero-image-wrapper {
+    width: 100%;
+    min-height: 280px;
+    overflow: hidden;
+  }
+
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .hero-card:hover .hero-img {
+    transform: scale(1.03);
+  }
+
+  .hero-content {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero-title {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #111827;
+    margin: 0.5rem 0 1rem 0;
+    line-height: 1.2;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+    color: #4b5563;
+    line-height: 1.6;
+    margin: 0 0 1.5rem 0;
+  }
+
+  /* 3-KOLUMNSRUTIN */
+  .older-posts-section {
+    margin-bottom: 4rem;
+  }
+
   .post-grid {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
 
   .post-item {
     background: #ffffff;
-    border-left: 3px solid var(--brand);
+    border-left: 3px solid var(--brand, #367588);
     border-radius: 6px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-    transition: box-shadow 0.2s ease;
-    padding: 0;
-    border-bottom: none;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
     display: flex;
     flex-direction: column;
   }
 
   .post-item:hover {
-    box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px -2px rgba(0, 0, 0, 0.08);
   }
 
   .post-link {
@@ -173,9 +391,8 @@ const recentPosts = posts.slice(0, PAGE_SIZE);
 
   .post-image {
     width: 100%;
-    height: 180px;
+    height: 160px;
     overflow: hidden;
-    flex-shrink: 0;
   }
 
   .post-img {
@@ -183,7 +400,11 @@ const recentPosts = posts.slice(0, PAGE_SIZE);
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease;
+  }
+
+  .post-item:hover .post-img {
+    transform: scale(1.04);
   }
 
   .post-img-placeholder {
@@ -192,12 +413,8 @@ const recentPosts = posts.slice(0, PAGE_SIZE);
     background: linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 100%);
   }
 
-  .post-item:hover .post-img {
-    transform: scale(1.02);
-  }
-
   .post-body {
-    padding: 1.25rem 1.5rem;
+    padding: 1.25rem;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -207,11 +424,10 @@ const recentPosts = posts.slice(0, PAGE_SIZE);
     font-size: 0.75rem;
     color: #6b7280;
     margin-bottom: 0.4rem;
-    font-weight: 400;
   }
 
   .post-title {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 500;
     color: #111827;
     margin: 0 0 0.5rem 0;
@@ -219,9 +435,9 @@ const recentPosts = posts.slice(0, PAGE_SIZE);
   }
 
   .post-description {
-    font-size: 0.9rem;
-    color: #374151;
-    line-height: 1.6;
+    font-size: 0.85rem;
+    color: #4b5563;
+    line-height: 1.5;
     margin: 0 0 1rem 0;
     flex: 1;
   }
@@ -236,57 +452,38 @@ const recentPosts = posts.slice(0, PAGE_SIZE);
   .tag {
     font-size: 0.7rem;
     font-weight: 500;
-    color: var(--brand);
+    color: var(--brand, #367588);
     background: rgba(54, 117, 136, 0.08);
     padding: 0.2rem 0.5rem;
     border-radius: 999px;
-    text-decoration: none;
-    transition: background 0.2s ease;
   }
 
-  .tag:hover {
-    background: rgba(54, 117, 136, 0.18);
-    opacity: 1;
+  /* Responsivt */
+  @media (max-width: 900px) {
+    .profile-section {
+      flex-direction: column-reverse;
+      text-align: center;
+      gap: 1.5rem;
+    }
+    .profile-text p {
+      margin: 0 auto;
+    }
+    .hero-link {
+      grid-template-columns: 1fr;
+    }
+    .post-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
-  .pagination {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e5e7eb;
-  }
-
-  .pagination-info {
-    font-size: 0.85rem;
-    color: #6b7280;
-  }
-
-  .pagination-next {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--brand);
-    text-decoration: none;
-    transition: opacity 0.2s ease;
-  }
-
-  .pagination-next:hover {
-    opacity: 0.7;
-  }
-
-  /* Mobil – 1 kolumn */
-  @media (max-width: 720px) {
+  @media (max-width: 600px) {
     .post-grid {
       grid-template-columns: 1fr;
     }
-
-    .post-image {
-      height: 160px;
-    }
-
-    .post-body {
-      padding: 1rem 1.25rem;
+    .tag-bar-section {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
     }
   }
 </style>

@@ -1,172 +1,239 @@
 ---
-import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
-import Header from "../components/Header.astro";
+import { Image } from "astro:assets";
 
-type Props = {
-  title: string;
-  description: string;
-  pubDate?: Date;
-  updatedDate?: Date;
-  heroImage?: any;
-  tags?: string[];
-};
+type Props = CollectionEntry<"blog">["data"] & { id?: string };
 
-const { title, description, pubDate, updatedDate, heroImage, tags } =
+const { title, description, pubDate, updatedDate, heroImage, tags, id } =
   Astro.props;
+
+// Hämta alla inlägg för att kunna filtrera ut relaterade
+const allPosts = await getCollection("blog");
+
+// Hitta relaterade inlägg baserat på matchande taggar (exkludera nuvarande inlägg)
+const relatedPosts = allPosts
+  .filter(
+    (post) =>
+      post.id !== id &&
+      post.data.tags &&
+      tags &&
+      post.data.tags.some((t) => tags.includes(t)),
+  )
+  .slice(0, 3); // Visa max 3 relaterade inlägg
 ---
 
+<!doctype html>
 <html lang="sv">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D4HEFBCNSV"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-
-      gtag("config", "G-D4HEFBCNSV");
-    </script>
-
     <BaseHead title={title} description={description} />
-    <style>
-      main {
-        width: calc(100% - 2em);
-        max-width: 100%;
-        margin: 0;
-      }
-
-      .hero-image {
-        width: 100%;
-        padding-top: 2rem;
-      }
-
-      .hero-image img {
-        display: block;
-        margin: 0 auto;
-        border-radius: 12px;
-        box-shadow: var(--box-shadow);
-      }
-
-      .prose {
-        width: 720px;
-        max-width: calc(100% - 2em);
-        margin: auto;
-        padding: 1em;
-        color: rgb(var(--gray-dark));
-      }
-
-      .title {
-        margin-bottom: 1em;
-        padding: 1em 0;
-        text-align: center;
-        line-height: 1;
-      }
-
-      .title h1 {
-        margin: 0 0 0.5em 0;
-      }
-
-      .date {
-        margin-bottom: 0.5em;
-        color: rgb(var(--gray));
-      }
-
-      .last-updated-on {
-        font-style: italic;
-      }
-
-      .post-tags {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.5rem;
-        margin-top: 1rem;
-      }
-
-      .tag {
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: var(--brand);
-        background: rgba(54, 117, 136, 0.08);
-        padding: 0.25rem 0.65rem;
-        border-radius: 999px;
-        text-decoration: none;
-        transition: background 0.2s ease;
-      }
-
-      .tag:hover {
-        background: rgba(54, 117, 136, 0.18);
-      }
-
-      @media (max-width: 720px) {
-        .prose {
-          width: 100%;
-          max-width: 100%;
-          padding: 0.75em;
-        }
-
-        .hero-image img {
-          border-radius: 0;
-        }
-      }
-    </style>
   </head>
-
   <body>
     <Header />
     <main>
-      <article>
-        <div class="hero-image">
-          {
-            heroImage && (
+      <article class="article-container">
+        {
+          heroImage && (
+            <div class="hero-image">
               <Image
-                width={1020}
-                height={510}
                 src={heroImage}
                 alt=""
-                style="width: 100%; height: auto; max-height: 400px; object-fit: cover;"
+                width={1200}
+                height={600}
+                class="article-hero-img"
               />
-            )
-          }
-        </div>
+            </div>
+          )
+        }
         <div class="prose">
           <div class="title">
-            {
-              pubDate && (
-                <div class="date">
-                  <FormattedDate date={pubDate} />
-                  {updatedDate && (
-                    <div class="last-updated-on">
-                      Last updated on <FormattedDate date={updatedDate} />
-                    </div>
-                  )}
-                </div>
-              )
-            }
+            <div class="date">
+              <FormattedDate date={pubDate} />
+              {
+                updatedDate && (
+                  <div class="last-updated-on">
+                    Uppdaterad: <FormattedDate date={updatedDate} />
+                  </div>
+                )
+              }
+            </div>
             <h1>{title}</h1>
             {
               tags && tags.length > 0 && (
-                <div class="post-tags">
+                <div class="tag-list">
                   {tags.map((tag) => (
-                    <a href={`/tags/${tag}/`} class="tag">
-                      #{tag}
-                    </a>
+                    <span class="tag">#{tag}</span>
                   ))}
                 </div>
               )
             }
             <hr />
           </div>
+
+          <!-- Här kommer själva texten från markdown-filen -->
           <slot />
         </div>
+
+        {/* RELATERADE INLÄGG LÄNGST NER */}
+        {
+          relatedPosts.length > 0 && (
+            <section class="related-section">
+              <h3>Fler anteckningar på liknande spår</h3>
+              <div class="related-grid">
+                {relatedPosts.map((post) => (
+                  <a href={`/blog/${post.id}/`} class="related-card">
+                    {post.data.heroImage && (
+                      <div class="related-img-wrap">
+                        <Image
+                          src={post.data.heroImage}
+                          alt={post.data.title}
+                          width={400}
+                          height={200}
+                          class="related-img"
+                        />
+                      </div>
+                    )}
+                    <div class="related-content">
+                      <span class="related-date">
+                        <FormattedDate date={post.data.pubDate} />
+                      </span>
+                      <h4>{post.data.title}</h4>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </section>
+          )
+        }
       </article>
     </main>
     <Footer />
   </body>
 </html>
+
+<style>
+  .article-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem 1rem;
+  }
+
+  .hero-image {
+    width: 100%;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .article-hero-img {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .title {
+    margin-bottom: 2rem;
+  }
+
+  .date {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--brand, #367588);
+    background: rgba(54, 117, 136, 0.08);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+  }
+
+  /* Stil för relaterade inlägg */
+  .related-section {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .related-section h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #111827;
+    margin-bottom: 1.5rem;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .related-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid var(--brand, #367588);
+    border-radius: 6px;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .related-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .related-img-wrap {
+    height: 120px;
+    overflow: hidden;
+  }
+
+  .related-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .related-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .related-date {
+    font-size: 0.7rem;
+    color: #6b7280;
+    margin-bottom: 0.3rem;
+  }
+
+  .related-content h4 {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+    line-height: 1.3;
+  }
+</style>
