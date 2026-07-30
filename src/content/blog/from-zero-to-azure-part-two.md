@@ -1,807 +1,132 @@
 ---
 title: "From Zero To Azure Part Two"
-description: "Del 2 av tre: bygg en ASP.NET Core-app med CRUD mot Azure SQL, från tomt skelett till körande app på din egen maskin."
+description: "Del 2 av fem: sätt ett kostnadstak i Azure, få larm i tid och slipp oroa dig för oväntade fakturor."
 pubDate: 2026-05-31
 heroImage: "../../assets/images/blog/from-zero-to-azure-part-two/from-zero-to-azure-part-two.jpg"
 tags: ["Azure"]
 ---
-# Del 2 — Bygg appen
+
+# Del 2 — Håll koll på kostnaderna
 
 > **Serien From Zero to Azure**
-> [Del 1 — Sätt upp miljön](/blog/from-zero-to-azure-part-one) · **Del 2 — Bygg appen** (du är här) · [Del 3 — Ut i molnet](/blog/from-zero-to-azure-part-three)
+> [Del 1 — Sätt upp miljön](/blog/from-zero-to-azure-part-one) · **Del 2 — Håll koll på kostnaderna** (du är här) · [Del 3 — Bygg appen](/blog/from-zero-to-azure-part-three) · [Del 4 — Sätt upp tjänsterna](/blog/from-zero-to-azure-part-four) · [Del 5 — Bygg pipelinen](/blog/from-zero-to-azure-part-five)
 
-Det här är andra delen av tre. Här går du från tom mapp till en fungerande app med databas, tester och en lokal körning.
+Det här är andra delen av fem, och den kortaste. Vi skriver ingen kod. Vi sätter upp spärren som gör att du vågar experimentera i resten av serien.
 
-Del 1 är gjord en gång. Del 2 och Del 3 är upplagda för att gå att återanvända nästa gång du vill bygga en ny app. Byt bara namnen och kör igen.
+Rädslan för en oväntad faktura är det vanligaste skälet till att folk aldrig provar Azure. Skräckhistorierna finns, men de handlar nästan alltid om resurser man glömt bort, eller om tjänster i en helt annan storleksordning än den här serien.
 
-Förutsättning: Del 1 är klar. Du har .NET 10 SDK, Git, Visual Studio 2026 och en Azure SQL-databas med anslutningsuppgifter.
+**Förutsättning:** Del 1 är klar. Du har en resursgrupp och en databas i Azure.
 
-## Så jobbar vi
+## Om siffrorna i det här inlägget
 
-Del 2 har två faser.
+Priser, gratisnivåer och villkor i Azure ändras löpande, och de skiljer sig mellan regioner, prenumerationstyper och valutor. Det du läser här är hur jag har förstått att det fungerar när inlägget skrevs, och det är avsiktligt hållet på en nivå där det ska stämma en tid.
 
-- **Fas A** bygger skelettet från terminalen. Det gör stegen tydliga, repeterbara och oberoende av hur Visual Studio råkar se ut i just din version.
-- **Fas B** fyller på innehållet i Visual Studio. Där är IntelliSense, debuggern och refaktorisering mer värda än kommandoraden.
+Men lita inte på min uppgift när det gäller pengar. Innan du skapar något som kan kosta, kontrollera aktuellt pris i [Azure Pricing Calculator](https://azure.microsoft.com/pricing/calculator/) och läs villkoren för din egen prenumeration under **Cost Management**. Det är din faktura som gäller, inte ett blogginlägg.
 
-Guiden förutsätter att du vet vad `mkdir`, `cd` och `dir` gör. Den förutsätter inte att du kan EF Core eller Razor Pages.
+Är du osäker på om något debiteras, fråga Microsofts support via portalen. Det kostar ingenting och tar mindre tid än en obehaglig överraskning.
 
-## Namnen för den här omgången
+Just därför är resten av det här inlägget inriktat på bevakning snarare än på priser. En budget med larm skyddar dig oavsett vad tjänsterna kostar just nu.
 
-| Vad | Exempel |
-|---|---|
-| Mapp och repo | `todo-one` |
-| Solution, projekt, namespace | `TodoOne` |
-| Testprojekt | `TodoOne.Tests` |
-| Databas från Del 1 | `sqldb-todo-one` |
+Databasen är på plats och du har inte betalat något. Nu sätter vi upp spärren som gör att det förblir så.
 
-Utsidan — mappar, repon och molnresurser — skrivs med gemener och bindestreck. .NET-sidan skrivs i PascalCase, eftersom projektnamnet automatiskt blir både assembly-namn och root namespace.
+Så här ser kostnadsbilden ut konkret:
 
-## Fas A — Skelettet
+| Resurs | Kostnad i den här serien |
+| --- | --- |
+| Resursgrupp | Gratis, alltid. Det är bara en behållare. |
+| SQL-databas via Free offer | Gratis. Pausas automatiskt vid gränsen. |
+| App Service `Free F1` (Del 4) | Gratis. |
+| Azure DevOps | Gratis upp till fem användare. |
 
-### Steg 1 — Skapa mappen och initiera Git
+Det syns i sammanfattningen du klickade förbi när databasen skapades: `Estimated total: Free` och `Overage billing: Disabled`. Det sista betyder att databasen pausas när gratisgränsen nås, i stället för att börja debitera.
 
-Öppna **PowerShell**: tryck Windows-tangenten, skriv `powershell` och tryck Enter. Du kan också högerklicka på Start-knappen och välja **Terminal**.
+Ändå ska du sätta upp bevakning. Inte för att den här serien blir dyr, utan för att vanan är värd att ha när du väl provar något som kostar — och för att det är just den vissheten som gör att man vågar experimentera.
 
-PowerShell är standard i Windows 11, hanterar långa sökvägar bra och ger dig autokomplettering med Tab.
+## Tre verktyg under Monitoring
 
-Alla kommandon i guiden är skrivna för PowerShell. Flera av dem, som `New-Item` och `Get-ChildItem`, finns inte i den gamla kommandotolken `cmd` — kör du dem där får du bara ett felmeddelande om att kommandot inte hittas.
+I portalen, sök efter **Cost Management** och titta i vänstermenyn under rubriken `Monitoring`. Där finns tre saker som låter lika men gör olika:
 
-Vi lägger alla repon under `C:\git`. Har du en annan struktur du trivs med kan du använda den. Det viktiga är att du vet var repo-roten ligger.
+| Verktyg | Vad det gör | Värt att sätta upp nu? |
+| --- | --- | --- |
+| **Budgets** | Du sätter ett belopp och får mejl vid valda procentgränser. | Ja. |
+| **Cost alerts** | Inkorgen för larm som redan utlösts. Här skapar du också anomalilarm. | Ja, se nedan. |
+| **Alerts** | Larm på faktureringsnivå: krediter, fakturor, reservationsutnyttjande. | Nej. |
 
-```powershell
-mkdir C:\git\todo-one
-cd C:\git\todo-one
-git init
-dotnet new gitignore
-```
+Den sista är lätt att fastna i. Öppnar du `Alerts` från en **Billing profile** får du en dialog där `Alert type` erbjuder saker som `Reservation utilization` — larm om att reservationer du köpt inte används. Har du inga reservationer, vilket du inte har, finns inget att bevaka. Stäng och gå vidare.
 
-`dotnet new gitignore` lägger en `.gitignore` anpassad för .NET i mappen. Utan den riskerar du att committa `bin`, `obj` och användarspecifika filer direkt.
+## Skapa en budget
 
-### Steg 2 — Skapa solution och projekt
+Gå in via prenumerationen, så hamnar budgeten på rätt nivå direkt. Öppnar du `Cost Management` från portalens startsida landar du ofta på faktureringskontot i stället, och då bevakar budgeten hela kontot. Det fungerar, men är trubbigare — du ser inte vad just den här prenumerationen kostar.
 
-Kommandona nedan skapar filer relativt den mapp du står i, så kontrollera att du står i repo-roten. Prompten ska sluta på `todo-one`:
+1. Sök **Subscriptions** i portalen och klicka på prenumerationen i listan.
+2. I vänstermenyn: **Cost Management** → `Budgets` → klicka **+ Add**.
+3. `Budget scoping`:
+   * Scope: ska redan visa prenumerationens namn.
+   * Filters: hoppa över. Vill du senare bevaka bara en resursgrupp lägger du till ett filter här.
+4. `Budget Details`:
+   * Name: `budget-monthly`. Namnet måste vara unikt inom scopet.
+   * Reset period: **Monthly**. Beloppet nollställs den första varje månad.
+   * Creation date: innevarande månad, dagen fylls i automatiskt.
+   * Expiration date: låt förslaget stå. Budgeten upphör då att gälla, så sätt en påminnelse om du vill förlänga.
+5. `Budget Amount`:
+   * Amount: **150**. Azure föreslår en siffra baserad på din prognos, ofta noll eller några kronor på ett nytt konto. Sätt ändå ett rimligt tak — 150 kr i månaden är lågt nog att larma tidigt utan att pipa för varje krona.
 
-```powershell
-PS C:\git\todo-one>
-```
+   Har du redan andra resurser i prenumerationen behöver du välja belopp med omsorg. Ligger din nuvarande förbrukning på 130 kr i månaden kommer ett tak på 150 larma varje månad utan att något faktiskt hänt, och larm som alltid tjuter slutar man läsa. Antingen höjer du taket ordentligt över baslinjen, eller så filtrerar du budgeten till bara `rg-dev` under `Budget scoping` → `Add filter` → `Resource group`. Det andra alternativet är oftast bättre — då mäter du den här serien för sig, och dina befintliga resurser stör inte.
+6. Klicka **Next** för att komma till `Set alerts`.
 
-Gör den inte det, navigera dit — eller till den mapp du valde i steg 1:
+Har du redan skapat en budget och är osäker på var den hamnade: öppna `Budgets` via menyn ovan. Syns den i listan är den kopplad till prenumerationen. Är listan tom ligger den på faktureringskontot, och du kan skapa om den härifrån.
 
-```powershell
-cd C:\git\todo-one
-```
+Står det i stället `Failed to retrieve billing information` har sidan inte lyckats hämta data — det säger ingenting om huruvida budgeten finns. Felet är övergående. Klicka `Refresh`, eller kom tillbaka senare. Inget i den här serien är beroende av budgeten, så du kan gå vidare under tiden.
 
-Samma sak gäller alla kommandon i fas A. Står du fel hamnar projektet på fel plats, och sökvägarna i pipelinen i Del 3 slutar stämma.
+## Sätt larmen
 
-```powershell
-dotnet new sln --name TodoOne
-dotnet new webapp --name TodoOne --output src/TodoOne --framework net10.0
-dotnet new xunit --name TodoOne.Tests --output src/TodoOne.Tests --framework net10.0
+Här väljer du vid vilka nivåer du vill bli störd. Lägg till tre rader:
 
-dotnet sln add src/TodoOne/TodoOne.csproj
-dotnet sln add src/TodoOne.Tests/TodoOne.Tests.csproj
-dotnet add src/TodoOne.Tests/TodoOne.Tests.csproj reference src/TodoOne/TodoOne.csproj
-```
+| Type | % of budget | Vad det betyder med 150 kr |
+| --- | --- | --- |
+| Actual | 50 | Mejl vid 75 kr förbrukat |
+| Actual | 80 | Mejl vid 120 kr |
+| Forecasted | 100 | Mejl när Azure *förutspår* att du landar över 150 kr |
 
-Tre kommandon skapar solutionen och projekten. Tre kommandon kopplar ihop dem.
+Den sista är den mest användbara. `Forecasted` larmar innan pengarna är spenderade, baserat på hur förbrukningen ser ut hittills. `Actual` larmar när det redan hänt.
 
-Du kan klistra in hela blocket på en gång — PowerShell kör raderna i tur och ordning. Varnar Windows Terminal för att du klistrar in flera rader är det bara en bekräftelsefråga.
+Fyll i din e-postadress under `Alert recipients`, och klicka **Create**.
 
-Kom bara ihåg att körningen inte stannar vid fel. Misslyckas ett kommando körs resten ändå, och följdfelen kan bli svårlästa. Läs utskriften innan du går vidare, eller kör ett kommando i taget om du vill ha full kontroll. Det gäller alla flerradiga block i guiden.
+Vill du larma flera personer skriver du en adress per rad — tryck Enter emellan. Semikolon eller komma på samma rad underkänns, eftersom hela strängen då tolkas som en enda adress. Alla mottagare får samma mejl vid samma tröskel.
 
-I .NET 10 skapar `dotnet new sln` som standard en `*.slnx`-fil i det nya XML-baserade formatet i stället för en klassisk `*.sln`-fil. Visual Studio 2026 öppnar den utan problem.
+**En viktig sak att veta:** en budget stoppar ingenting. Den skickar mejl. Azure fortsätter köra dina resurser även när taket passeras. Vill du att något ska stängas av krävs en automatisering, vilket ligger utanför den här serien. Budgeten är en rökdetektor, inte ett sprinklersystem.
 
-### Steg 3 — Lägg till paketen
+## Anomalilarm under `Cost alerts`
 
-```powershell
-dotnet add src/TodoOne/TodoOne.csproj package Microsoft.EntityFrameworkCore.SqlServer
-dotnet add src/TodoOne/TodoOne.csproj package Microsoft.EntityFrameworkCore.Tools
-dotnet add src/TodoOne.Tests/TodoOne.Tests.csproj package Microsoft.EntityFrameworkCore.InMemory
-```
+En budget larmar när summan blir för hög. Ett anomalilarm larmar när mönstret ändras — om din dagliga förbrukning plötsligt dubblas, även om totalen fortfarande är låg. Det fångar den klassiska tabben: en resurs som råkat skapas i fel prisklass, eller en tjänst som inte stängdes av.
 
-`SqlServer` är providern mot Azure SQL. `Tools` behövs för migrationskommandon i Package Manager Console. `InMemory` gör att testerna kan köra utan att röra Azure.
+Anomalilarm går bara att skapa på prenumerationsnivå, och det gäller alla konton. Öppnar du `Cost Management` direkt från portalens startsida landar du ofta på faktureringskontot i stället, och då är valet gråmarkerat med texten *Not available for billing profiles. Please change scope to a subscription.* Gå därför in via prenumerationen från början:
 
-### Steg 4 — Skapa tomma kodfiler
+1. Sök **Subscriptions** i portalen och klicka på prenumerationen i listan.
+2. I vänstermenyn: **Cost Management** → `Cost alerts`.
+3. Klicka **+ Add**.
+4. `Alert type`: **Anomaly**. Övriga fält i `Condition` fylls i automatiskt och kan stå som de är.
+5. `Subject`, `Message` och `Alert name` är förifyllda med rimliga värden. Ändra bara om du vill.
+6. `Recipients`: din e-postadress. Flera går bra, en per rad.
+7. `Language`: styr språket i larmmejlet. Sätt engelska om du vill hålla samma linje som resten av serien.
+8. Klicka **Create**. Knappen tänds först när fältet du senast skrev i tappar fokus — tryck Tab om den ser gråmarkerad ut trots att allt är ifyllt.
 
-Vi använder `dotnet new` även för enskilda filer. Då hamnar de direkt på rätt plats med rätt namespace.
+Notera datumet efter `until` i `Condition`. Regeln slutar gälla då, normalt ett år fram. Vill du ha bevakning längre än så får du förlänga eller skapa om den.
 
-```powershell
-dotnet new class --name Todo --output src/TodoOne/Models
-dotnet new class --name AppDbContext --output src/TodoOne/Data
-dotnet new apicontroller --name TodoController --output src/TodoOne/Controllers
-dotnet new page --name Todos --output src/TodoOne/Pages
-dotnet new class --name TodoTests --output src/TodoOne.Tests
-```
+Är du redan inne i `Cost Management` och ser `Billing profile` i rubriken kan du i stället klicka på scope-namnet högst upp på sidan och byta till prenumerationen.
 
-`page`-mallen skapar två filer: `Todos.cshtml` och `Todos.cshtml.cs`.
-
-Ta sedan bort den testfil som xUnit-mallen skapade åt dig:
+Två begränsningar värda att känna till: Azure lär sig ditt mönster från de senaste 60 dagarna, så på ett nytt konto tar det ett tag innan larmet är meningsfullt, och detektionen har ett par dygns fördröjning. Det ersätter alltså inte budgeten — det kompletterar den.
 
-```powershell
-Remove-Item src\TodoOne.Tests\UnitTest1.cs
-```
+## Om något ändå kostar
 
-### Steg 5 — Kontrollera resultatet
+Gå till **Cost Management** → `Cost analysis` och gruppera på `Service name`. Då ser du exakt vilken tjänst det är.
 
-```powershell
-dotnet build
-```
+Den kraftigaste åtgärden är att ta bort hela resursgruppen: **Resource groups** → `rg-dev` → **Delete resource group** → skriv namnet för att bekräfta. Allt inuti försvinner, och kostnaden upphör. Du kan alltid köra Del 1 igen — det tar en kvart.
 
-Det här är vad du ska förvänta dig:
+## Vidare till Del 3
 
-- Bygget ska gå igenom utan fel.
-- Några varningar kan förekomma, men inga röda fel.
-- Om det faller här beror det nästan alltid på att något kommando i steg 2 eller 3 inte kördes som det skulle.
+Nu har du ett tak, larm som når dig i tid, och ett sätt att hitta boven om något börjar kosta. Det är tio minuters arbete som gör resten av serien betydligt mer avspänd.
 
-Så här ska strukturen se ut i stora drag:
+I Del 3 börjar vi koda. Databasen du skapade i Del 1 står tom — ingen tabell, ingen rad, ingenting. Det ändrar vi på nu.
 
-```text
-C:\git\todo-one\
-├─ .git\
-├─ .gitignore
-├─ TodoOne.slnx
-└─ src\
-   ├─ TodoOne\
-   │  ├─ TodoOne.csproj
-   │  ├─ Program.cs
-   │  ├─ appsettings.json
-   │  ├─ Controllers\
-   │  │  └─ TodoController.cs
-   │  ├─ Data\
-   │  │  └─ AppDbContext.cs
-   │  ├─ Models\
-   │  │  └─ Todo.cs
-   │  ├─ Pages\
-   │  │  ├─ Todos.cshtml
-   │  │  ├─ Todos.cshtml.cs
-   │  │  ├─ Index.cshtml
-   │  │  ├─ Privacy.cshtml
-   │  │  └─ Shared\
-   │  │     └─ _Layout.cshtml
-   │  ├─ Properties\
-   │  └─ wwwroot\
-   └─ TodoOne.Tests\
-      ├─ TodoOne.Tests.csproj
-      └─ TodoTests.cs
-```
-
-På disken ligger fler filer än så. Webapp-mallen skapar bland annat `Error.cshtml`, `_ViewImports.cshtml` och `_ViewStart.cshtml`, och bygget har lagt till `bin` och `obj` under båda projekten. Inget av det behöver du bry dig om.
-
-Det som spelar roll är att de fem filerna du skapade i steg 4 finns på rätt plats. Kontrollera dem så här:
-
-```powershell
-Get-ChildItem -Recurse -Include Todo.cs,AppDbContext.cs,TodoController.cs,Todos.cshtml,TodoTests.cs |
-    Select-Object -ExpandProperty FullName
-```
-
-Fem rader ska komma tillbaka:
-
-```text
-C:\git\todo-one\src\TodoOne\Controllers\TodoController.cs
-C:\git\todo-one\src\TodoOne\Data\AppDbContext.cs
-C:\git\todo-one\src\TodoOne\Models\Todo.cs
-C:\git\todo-one\src\TodoOne\Pages\Todos.cshtml
-C:\git\todo-one\src\TodoOne.Tests\TodoTests.cs
-```
-
-Saknas någon rad kördes motsvarande kommando i steg 4 inte som det skulle.
-
-Lägg särskilt sökvägen `src/TodoOne/TodoOne.csproj` på minnet. Den behövs igen i Del 3.
-
-### Steg 6 — Checka in skelettet
-
-Stå i repo-roten. Punkten i `git add .` betyder den här mappen och allt under den, så står du i en undermapp får du bara med en del av projektet.
-
-```powershell
-git add .
-git commit -m "Add project skeleton"
-```
-
-Du får sannolikt en lång rad varningar som ser ut så här:
-
-```text
-warning: in the working copy of 'src/TodoOne/wwwroot/lib/jquery/dist/jquery.slim.min.js',
-LF will be replaced by CRLF the next time Git touches it
-```
-
-Det är inget fel. Git för Windows lagrar radbrytningar som LF i repot men skriver ut dem som CRLF på disk, och talar om att den gör det. De flesta varningarna kommer från de färdiga JavaScript-biblioteken under `wwwroot/lib` som webapp-mallen la dit. Filerna är oförändrade, och commiten går igenom som den ska.
-
-Det här är en bra första commit: projektet bygger, strukturen är klar och du har en ren punkt att gå tillbaka till.
-
-## Fas B — Innehållet
-
-Öppna solutionen:
-
-```powershell
-Invoke-Item TodoOne.slnx
-```
-
-`Invoke-Item` gör samma sak som ett dubbelklick i Utforskaren: öppnar filen i det program Windows kopplat till filtypen. Eftersom `.slnx` hör till Visual Studio startas det med solutionen laddad.
-
-Från och med nu sker resten av Del 2 i Visual Studio.
-
-Behöver du köra ett kommando härifrån använder du Visual Studios inbyggda terminal: **Tools** → **Command Line** → **Terminal**. Den kör Developer PowerShell och öppnas i projektets mapp, så du slipper både växla fönster och navigera dit.
-
-### Steg 7 — Modellen
-
-Öppna `Models/Todo.cs` och ersätt innehållet med:
-
-```csharp
-using System.ComponentModel.DataAnnotations;
-
-namespace TodoOne.Models;
-
-public class Todo
-{
-    public int Id { get; set; }
-
-    [Required]
-    [StringLength(200)]
-    public string Text { get; set; } = string.Empty;
-
-    public bool Done { get; set; }
-}
-```
-
-Attributen gör dubbelt jobb. EF Core använder dem när databasen byggs, och ASP.NET Core använder dem för modellvalidering.
-
-### Steg 8 — DbContext
-
-Ersätt innehållet i `Data/AppDbContext.cs`:
-
-```csharp
-using Microsoft.EntityFrameworkCore;
-using TodoOne.Models;
-
-namespace TodoOne.Data;
-
-public class AppDbContext : DbContext
-{
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
-    {
-    }
-
-    public DbSet<Todo> Todos => Set<Todo>();
-}
-```
-
-`DbContext` är appens session mot databasen. `DbSet<Todo>` motsvarar tabellen `Todos`.
-
-### Steg 9 — Program.cs
-
-Ersätt innehållet i `Program.cs`:
-
-```csharp
-using Microsoft.EntityFrameworkCore;
-using TodoOne.Data;
-
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddRazorPages();
-builder.Services.AddControllers();
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-var app = builder.Build();
-
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
-app.UseAuthorization();
-
-app.MapRazorPages();
-app.MapControllers();
-
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-}
-
-app.Run();
-```
-
-Filen gör tre saker: registrerar tjänster, kopplar upp middleware och routing, och startar appen.
-
-`db.Database.Migrate()` applicerar väntande migrationer när appen startar. Det är praktiskt i en demo och i lokal utveckling, men i skarp drift finns det invändningar. Det återkommer Del 3 till.
-
-### Steg 10 — Connection string i User Secrets
-
-Lägg först in en tom `ConnectionStrings`-sektion i `appsettings.json`:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": ""
-  },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
-  },
-  "AllowedHosts": "*"
-}
-```
-
-Högerklicka sedan på projektet **TodoOne** i Solution Explorer och välj **Manage User Secrets**. Visual Studio öppnar då `secrets.json` för projektet.
-
-Lägg in connection stringen du sparade i Del 1.
-
-Har du den inte till hands hämtar du den i portalen: sök **Azure SQL** → **All resources** → klicka på databasen, alltså raden med `Resource type: Microsoft.Sql/servers/databases`. På `Overview` finns länken **Show database connection strings**.
-
-Sidan listar fyra varianter. Ta den som heter **ADO.NET (SQL authentication)** — de andra är till för Microsoft Entra-inloggning, som vi inte använder här.
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=tcp:sql-dev-mn.database.windows.net,1433;Initial Catalog=sqldb-todo-one;Persist Security Info=False;User ID=<ditt-användarnamn>;Password=<ditt-lösenord>;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-  }
-}
-```
-
-Ditt användarnamn står redan ifyllt i strängen från portalen. Lösenordet gör det inte — där står `{your_password}`, klammerparenteser och allt. Ersätt hela den delen med lösenordet du valde när servern skapades.
-
-`secrets.json` ligger utanför projektmappen och är gjord för känsliga värden i utvecklingsmiljön. Det är därför rätt ställe för lösenord lokalt.
-
-Committa innan du går vidare. Nästa steg är första gången något lämnar din maskin, och då är brandvägg, inloggning och nätverk med i bilden. Har du en commit här vet du att koden var hel när felsökningen började.
-
-Från terminalen:
-
-```powershell
-git add .
-git commit -m "Add Todo model, DbContext and connection string setup"
-```
-
-Eller i Visual Studio: **Git** → **Commit or Stash**, skriv meddelandet i rutan högst upp och klicka **Commit All**.
-
-Menyvalet heter så för att det döljer två olika saker. En **commit** sparar en punkt i historiken som du alltid kan gå tillbaka till. En **stash** lägger dina ändringar åt sidan tillfälligt, så att du kan byta gren eller prova något annat, och plocka fram dem igen senare. Stash är en ficka, commit är ett bokmärke. Här vill du ha en commit.
-
-`secrets.json` följer inte med — den ligger utanför repot. Kontrollera gärna att `appsettings.json` fortfarande har en tom `DefaultConnection`.
-
-Härifrån committar du när du själv vill säkra en punkt i arbetet — efter varje avslutat steg är en bra vana, och migrationen i nästa steg är ett bra tillfälle. Guiden nämner det bara en gång till, i sista steget.
-
-### Steg 11 — Skapa databastabellen
-
-En migration är en beskrivning av hur databasen ska ändras för att matcha modellen.
-
-Innan du kör något: kontrollera att `TodoOne` är **startup project**. Har solutionen flera projekt väljer Visual Studio ett åt dig, och det blir ofta testprojektet.
-
-Högerklicka `TodoOne` i Solution Explorer och välj **Set as Startup Project**. Projektnamnet visas i fetstil när det är rätt satt.
-
-Öppna sedan **Tools → NuGet Package Manager → Package Manager Console**. Högst upp i konsolfönstret sitter en verktygsrad med två listor, `Package source` och `Default project`. Kontrollera att `Default project` står på `src\TodoOne` eller `TodoOne`, beroende på hur Visual Studio visar projektet.
-
-De två inställningarna gör olika saker och båda måste stämma. `Default project` bestämmer var migrationsfilerna hamnar. Startup project är det som EF Core Tools bygger och läser konfigurationen ur — alltså det som behöver ha `DbContext` och din anslutningssträng.
-
-Kör följande i Package Manager Console, inte i terminalen:
-
-```text
-Add-Migration InitialCreate
-```
-
-Kommandot hämtar sina två projekt från inställningarna ovan: migrationsfilerna hamnar i det som står i `Default project`, och bygget läses från startup project. Klagar EF Core på fel projekt är det någon av dem som inte stämmer.
-
-Det här är vad du ska förvänta dig:
-
-- En mapp `Migrations` skapas i projektet.
-- Du får en migrationsfil och en model snapshot.
-- Kommandot ska avslutas utan fel om paketen i steg 3 är rätt installerade.
-
-Applicera sedan migrationen, också i Package Manager Console:
-
-```text
-Update-Database
-```
-
-Det här är vad du ska förvänta dig:
-
-- Tabellen `Todos` skapas i databasen.
-- Tabellen `__EFMigrationsHistory` får en rad för `InitialCreate`.
-- Inga fel om anslutningssträngen i User Secrets är korrekt.
-
-Verifiera i **SQL Server Object Explorer**, som du kopplade upp i Del 1. Högerklicka `sqldb-todo-one` och välj **New Query**:
-
-```sql
-SELECT * FROM Todos;
-SELECT * FROM __EFMigrationsHistory;
-```
-
-`Todos` ska finnas men vara tom. `__EFMigrationsHistory` ska innehålla en rad.
-
-### Steg 12 — API:et
-
-Ersätt innehållet i `Controllers/TodoController.cs`:
-
-```csharp
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TodoOne.Data;
-using TodoOne.Models;
-
-namespace TodoOne.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class TodoController : ControllerBase
-{
-    private readonly AppDbContext _db;
-
-    public TodoController(AppDbContext db)
-    {
-        _db = db;
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Todo>>> GetAll()
-    {
-        return await _db.Todos.AsNoTracking().ToListAsync();
-    }
-
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Todo>> Get(int id)
-    {
-        var todo = await _db.Todos.FindAsync(id);
-
-        if (todo is null)
-        {
-            return NotFound();
-        }
-
-        return todo;
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<Todo>> Create(Todo todo)
-    {
-        _db.Todos.Add(todo);
-        await _db.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(Get), new { id = todo.Id }, todo);
-    }
-
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, Todo input)
-    {
-        var todo = await _db.Todos.FindAsync(id);
-
-        if (todo is null)
-        {
-            return NotFound();
-        }
-
-        todo.Text = input.Text;
-        todo.Done = input.Done;
-        await _db.SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var todo = await _db.Todos.FindAsync(id);
-
-        if (todo is null)
-        {
-            return NotFound();
-        }
-
-        _db.Todos.Remove(todo);
-        await _db.SaveChangesAsync();
-
-        return NoContent();
-    }
-}
-```
-
-Här får du fem endpoints: läsa alla, läsa en, skapa, uppdatera och ta bort. `AsNoTracking()` i läsningen är en enkel best practice när du bara ska läsa data och inte ändra den i samma kontext.
-
-### Steg 13 — Webbsidan
-
-Ersätt innehållet i `Pages/Todos.cshtml.cs`.
-
-I Solution Explorer ligger den filen dold under `Todos.cshtml`. Klicka på pilen till vänster om `Todos.cshtml` för att fälla ut den. Visual Studio grupperar filer som hör ihop på det sättet, och samma sak gäller `Index.cshtml` och `Privacy.cshtml`.
-
-```csharp
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using TodoOne.Data;
-using TodoOne.Models;
-
-namespace TodoOne.Pages;
-
-public class TodosModel : PageModel
-{
-    private readonly AppDbContext _db;
-
-    public TodosModel(AppDbContext db)
-    {
-        _db = db;
-    }
-
-    public IReadOnlyList<Todo> Items { get; private set; } = [];
-
-    [BindProperty]
-    public string? NewText { get; set; }
-
-    public async Task OnGetAsync()
-    {
-        Items = await _db.Todos.AsNoTracking().OrderBy(t => t.Id).ToListAsync();
-    }
-
-    public async Task<IActionResult> OnPostAddAsync()
-    {
-        if (!string.IsNullOrWhiteSpace(NewText))
-        {
-            _db.Todos.Add(new Todo { Text = NewText.Trim() });
-            await _db.SaveChangesAsync();
-        }
-
-        return RedirectToPage();
-    }
-
-    public async Task<IActionResult> OnPostToggleAsync(int id)
-    {
-        var todo = await _db.Todos.FindAsync(id);
-
-        if (todo is not null)
-        {
-            todo.Done = !todo.Done;
-            await _db.SaveChangesAsync();
-        }
-
-        return RedirectToPage();
-    }
-
-    public async Task<IActionResult> OnPostDeleteAsync(int id)
-    {
-        var todo = await _db.Todos.FindAsync(id);
-
-        if (todo is not null)
-        {
-            _db.Todos.Remove(todo);
-            await _db.SaveChangesAsync();
-        }
-
-        return RedirectToPage();
-    }
-}
-```
-
-Ersätt innehållet i `Pages/Todos.cshtml`:
-
-```cshtml
-@page
-@model TodoOne.Pages.TodosModel
-@{
-    ViewData["Title"] = "Todo list";
-}
-
-<h1>Todo list</h1>
-
-<form method="post" asp-page-handler="Add" class="mb-4">
-    <div class="input-group">
-        <input asp-for="NewText" class="form-control" placeholder="What needs doing?" />
-        <button type="submit" class="btn btn-primary">Add</button>
-    </div>
-</form>
-
-@if (Model.Items.Count == 0)
-{
-    <p class="text-muted">Nothing here yet.</p>
-}
-
-<ul class="list-unstyled">
-    @foreach (var item in Model.Items)
-    {
-        <li class="d-flex justify-content-between align-items-center border-bottom py-2">
-            <span class="@(item.Done ? "text-decoration-line-through text-muted" : "")">
-                @item.Text
-            </span>
-
-            <div class="d-flex gap-2">
-                <form method="post" asp-page-handler="Toggle" asp-route-id="@item.Id">
-                    <button type="submit" class="btn btn-sm btn-outline-secondary">
-                        @(item.Done ? "Undo" : "Done")
-                    </button>
-                </form>
-
-                <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id">
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                </form>
-            </div>
-        </li>
-    }
-</ul>
-```
-
-Razor Pages kopplar formulär till metoder via namn. `asp-page-handler="Add"` letar upp `OnPostAddAsync` och `asp-route-id` skickar med id till rätt metod.
-
-Layouten kommer från Bootstrap, som redan ingår i mallen. `justify-content-between` på `<li>` trycker isär innehållet så att texten hamnar till vänster och knapparna till höger, och `<div>`-elementet runt de två formulären håller ihop dem som en grupp.
-
-Lägg också till en menylänk i `Pages/Shared/_Layout.cshtml`. Leta upp den befintliga `Privacy`-posten och lägg den nya direkt efter, så att det ser ut så här:
-
-```cshtml
-<li class="nav-item">
-    <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link text-dark" asp-area="" asp-page="/Todos">Todos</a>
-</li>
-```
-
-`Privacy`-posten finns redan i filen — det är bara de fyra raderna under som är nya.
-
-### Steg 14 — Testet
-
-Ersätt innehållet i `TodoOne.Tests/TodoTests.cs`:
-
-```csharp
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TodoOne.Controllers;
-using TodoOne.Data;
-using TodoOne.Models;
-using Xunit;
-
-namespace TodoOne.Tests;
-
-public class TodoTests
-{
-    private static AppDbContext CreateContext()
-    {
-        var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        return new AppDbContext(options);
-    }
-
-    [Fact]
-    public async Task Create_ThenGetAll_ReturnsTheItem()
-    {
-        await using var db = CreateContext();
-        var controller = new TodoController(db);
-
-        await controller.Create(new Todo { Text = "Buy coffee" });
-
-        var result = await controller.GetAll();
-        var items = Assert.IsAssignableFrom<IEnumerable<Todo>>(result.Value);
-
-        Assert.Single(items);
-        Assert.Equal("Buy coffee", items.First().Text);
-    }
-
-    [Fact]
-    public async Task Delete_RemovesTheItem()
-    {
-        await using var db = CreateContext();
-        var controller = new TodoController(db);
-        db.Todos.Add(new Todo { Id = 1, Text = "Write CV" });
-        await db.SaveChangesAsync();
-
-        var result = await controller.Delete(1);
-
-        Assert.IsType<NoContentResult>(result);
-        Assert.Empty(db.Todos);
-    }
-}
-```
-
-Testerna kör mot en databas i minnet och rör aldrig Azure. `Guid.NewGuid()` gör att varje test får en egen isolerad databasinstans.
-
-Kör testerna via **Test → Run All Tests** eller `Ctrl+R, A`.
-
-Det här är vad du ska förvänta dig:
-
-- Två gröna tester i Test Explorer.
-- Inga beroenden till Azure för att testerna ska lyckas.
-- Snabb körning, eftersom allt sker i minnet.
-
-### Steg 15 — Kör appen
-
-Tryck `F5`. Visual Studio bygger, startar appen och öppnar webbläsaren.
-
-Testa:
-
-- `https://localhost:<port>/todos` — lägg till några poster, markera en som klar och ta bort en. Du kan också klicka `Todos` i menyn, som är länken du la in i förra steget.
-- `https://localhost:<port>/api/todo` — samma data som JSON.
-
-Porten ser du i adressfältet och i `Properties/launchSettings.json`.
-
-Adresserna är värda att skriva in för hand en gång. `/todos` kommer från filnamnet `Todos.cshtml` och `/api/todo` från klassnamnet `TodoController` minus suffixet — routing i ASP.NET Core bygger till stor del på den sortens konventioner, och de blir tydligare när man ser dem i adressfältet.
-
-Vill du testa API:ets skrivoperationer går det bra med `curl`:
-
-```powershell
-curl -k -X POST https://localhost:<port>/api/todo -H "Content-Type: application/json" -d "{\"text\":\"From the API\",\"done\":false}"
-```
-
-Ladda om `/todos`. Posten du skapade via API:et ska nu synas även på sidan.
-
-Kontrollera också i **SQL Server Object Explorer** att raderna verkligen ligger i Azure:
-
-```sql
-SELECT * FROM Todos;
-```
-
-### Steg 16 — Sista committen
-
-Gör en sista commit, till exempel med meddelandet:
-
-```text
-Add CRUD for todos with API, page and tests
-```
-
-Öppna sedan `appsettings.json` en sista gång och kontrollera att `DefaultConnection` fortfarande är tom. Det är en enkel men viktig best practice.
-
-## Klar?
-
-- [ ] `dotnet build` går igenom utan fel.
-- [ ] Test Explorer visar två gröna tester.
-- [ ] `/todos` går att lägga till, markera klar och ta bort i.
-- [ ] `/api/todo` returnerar samma data som JSON.
-- [ ] Raderna syns i databasen.
-- [ ] `appsettings.json` innehåller inget lösenord.
-- [ ] Allt är committat.
-
-Då är du redo för Del 3.
-
-## Felsökning
-
-### `Your startup project 'TodoOne.Tests' doesn't reference Microsoft.EntityFrameworkCore.Design`
-
-Visual Studio har valt testprojektet som startup project. EF Core Tools bygger och läser konfiguration därifrån, och testprojektet har varken `DbContext` eller anslutningssträng.
-
-Högerklicka `TodoOne` i Solution Explorer och välj **Set as Startup Project**, och kontrollera att `Default project` i konsolen står på `TodoOne`.
-
-Vill du kringgå inställningarna helt kan du peka ut projekten i kommandot:
-
-```text
-Add-Migration InitialCreate -Project TodoOne -StartupProject TodoOne
-```
-
-### `File '...\src\TodoOne\bin\Debug\net10.0\TodoOne.Tests.dll' not found`
-
-Samma orsak, men i ett halvfärdigt tillstånd: konsolen letar efter testprojektets assembly i app-projektets utdatamapp. Sätt `TodoOne` som startup project, kör **Build → Clean Solution** följt av **Build → Rebuild Solution**, stäng Package Manager Console och öppna den igen. Går det fortfarande inte, använd `-Project` och `-StartupProject` som ovan.
-
-### `Add-Migration` hittas inte i Package Manager Console
-
-`Microsoft.EntityFrameworkCore.Tools` saknas i projektet, eller så behöver Visual Studio startas om efter att paketet installerats.
-
-### `Cannot open server ... Client with IP address ... is not allowed`
-
-Det är Azure SQL-brandväggen. Din publika IP har ändrats, eller så använder du VPN. Lägg till aktuell klient-IP i portalen.
-
-### `Login failed for user`
-
-Det brukar bero på fel lösenord i `secrets.json`, eller på att JSON-strängen blev trasig vid inklistring. Öppna `Manage User Secrets` igen och kontrollera värdet.
-
-### `A network-related or instance-specific error ... The server was not found`
-
-Servernamnet är fel. Det ska vara `<server>.database.windows.net`.
-
-### Första anropet tar 30–60 sekunder och timeoutar
-
-Databasen är sannolikt serverless och har gått i vila. Vänta en stund, eller väck den med en `SELECT` i **SQL Server Object Explorer** först.
-
-### `/api/todo` ger 404
-
-`AddControllers()` saknas i `Program.cs`, eller så mappar du inte controllers med `app.MapControllers()`.
-
-### Sidan visar poster men de försvinner vid omstart
-
-Appen pekar mot en annan databas än du tror. Kontrollera att `secrets.json` verkligen pekar på databasen från Del 1 och inte på någon lokal instans.
-
-### `InvalidOperationException: Unable to resolve service for type 'AppDbContext'`
-
-`AddDbContext<AppDbContext>` saknas i `Program.cs`, eller ligger efter `builder.Build()`. Då hinner tjänsten aldrig registreras.
+Vill du gräva djupare i vad Azure-tjänster faktiskt kostar finns ett separat inlägg om App Service: [Azure App Service — vad det kostar, och vad som ändras på Linux](/blog/azure-app-service-costs-and-linux). Det förklarar bland annat varför du betalar för planen och inte för apparna.

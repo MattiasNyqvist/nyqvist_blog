@@ -1,6 +1,6 @@
 ---
 title: "From Zero To Azure Part One"
-description: "Del 1 av tre: installera verktygen, skapa kontona och sätt upp en Azure SQL-databas — grunden för att bygga och driftsätta en ASP.NET Core-app."
+description: "Del 1 av fem: installera verktygen, skapa kontona och sätt upp en Azure SQL-databas — grunden för att bygga och driftsätta en ASP.NET Core-app."
 pubDate: 2026-05-24
 heroImage: "../../assets/images/blog/from-zero-to-azure-part-one/from-zero-to-azure-part-one.jpg"
 tags: ["Azure"]
@@ -8,12 +8,12 @@ tags: ["Azure"]
 # Del 1 — Sätt upp miljön
 
 > **Serien From Zero to Azure**
-> **Del 1 — Sätt upp miljön** (du är här) · [Del 2 — Bygg appen](/blog/from-zero-to-azure-part-two) · [Del 3 — Ut i molnet](/blog/from-zero-to-azure-part-three)
+> **Del 1 — Sätt upp miljön** (du är här) · [Del 2 — Håll koll på kostnaderna](/blog/from-zero-to-azure-part-two) · [Del 3 — Bygg appen](/blog/from-zero-to-azure-part-three) · [Del 4 — Sätt upp tjänsterna](/blog/from-zero-to-azure-part-four) · [Del 5 — Bygg pipelinen](/blog/from-zero-to-azure-part-five)
 
-Det här är första delen av tre. När du är klar har du verktygen på plats, kontona skapade och en Azure SQL-databas redo att användas.
+Det här är första delen av fem. När du är klar har du verktygen på plats, kontona skapade och en Azure SQL-databas redo att användas.
 
-* Del 1 gör du en gång.
-* Del 2 och Del 3 återanvänder du sedan, varje gång du vill bygga något nytt.
+* Del 1 och 2 gör du en gång.
+* Del 3, 4 och 5 återanvänder du sedan, varje gång du vill bygga något nytt.
 
 ## Först: det kommer inte kosta dig något
 
@@ -110,7 +110,7 @@ Skapa tre konton, alla med gratisnivåer som räcker för den här serien:
 * Azure: [azure.microsoft.com/free](https://azure.microsoft.com/free)
 * Azure DevOps: [dev.azure.com](https://dev.azure.com)
 
-Använd samma inloggning till Azure och Azure DevOps. Det gör kopplingen mellan dem enklare i Del 3.
+Använd samma inloggning till Azure och Azure DevOps. Det gör kopplingen mellan dem enklare i Del 4.
 
 ## Logga in på Azure
 
@@ -211,7 +211,7 @@ Servern och databasen är nu skapade. Sidan är en kvittens och behöver inget m
 
 ## Öppna brandväggen
 
-Free offer-formuläret har ingen **Networking**-flik, så servern skapas utan brandväggsregler. Det betyder att ingen kommer åt databasen än — varken du från din egen maskin eller App Service i Del 3. Det fixar vi nu.
+Free offer-formuläret har ingen **Networking**-flik, så servern skapas utan brandväggsregler. Det betyder att ingen kommer åt databasen än — varken du från din egen maskin eller App Service i Del 4. Det fixar vi nu.
 
 I portalen:
 
@@ -219,18 +219,18 @@ I portalen:
 2. I vänstermenyn: **Security** → **Networking**.
 3. På fliken **Public access**, välj **Selected networks**.
 4. Under **Firewall rules**, klicka **Add your client IPv4 address**. Din publika IP står i knapptexten.
-5. Scrolla ner till rubriken **Exceptions**, längst ner på sidan under brandväggsreglerna. Kryssa i **Allow Azure services and resources to access this server**. Utan den kommer App Service inte åt databasen i Del 3.
+5. Scrolla ner till rubriken **Exceptions**, längst ner på sidan under brandväggsreglerna. Kryssa i **Allow Azure services and resources to access this server**. Utan den kommer App Service inte åt databasen i Del 4.
 6. Klicka **Save**.
 
 De två reglerna beter sig olika över tid. **Allow Azure services** sätter du en gång och sedan gäller den. IP-regeln gäller bara så länge du har kvar samma publika adress, och den kan ändras när som helst — vid en routeromstart, när operatören delar ut en ny adress, när du slår på VPN eller när du sitter på ett annat nätverk. Slutar du plötsligt komma åt databasen är det här första stället att titta. Se avsnittet nedan.
 
 ## Spara anslutningssträngen
 
-Anslutningssträngen är den rad som talar om för din app var databasen finns och hur den ska logga in. Du behöver den i Del 2.
+Anslutningssträngen är den rad som talar om för din app var databasen finns och hur den ska logga in. Du behöver den i Del 3.
 
 Sök **Azure SQL** → **All resources** → klicka på databasen, alltså raden med `Resource type: Microsoft.Sql/servers/databases`. På `Overview` finns länken **Show database connection strings** under rubriken `Connection strings`. Samma sida nås via **Settings** → **Connection strings** i vänstermenyn.
 
-Sidan listar flera varianter. Ta den som heter **ADO.NET (SQL authentication)** — det är den inloggning vi använder i serien. Varianterna för Microsoft Entra är till för lösenordsfri inloggning, som vi återkommer till i Del 3.
+Sidan listar flera varianter. Ta den som heter **ADO.NET (SQL authentication)** — det är den inloggning vi använder i serien. Varianterna för Microsoft Entra är till för lösenordsfri inloggning, som vi återkommer till i Del 5.
 
 Strängen ser ut ungefär så här:
 
@@ -240,11 +240,11 @@ Server=tcp:sql-dev-mn.database.windows.net,1433;Initial Catalog=sqldb-todo-one;P
 
 Ditt användarnamn står redan ifyllt. Lösenordet gör det inte — där står `{your_password}`, klammerparenteser och allt, eftersom lösenordet inte lagras i klartext någonstans. Ersätt hela `{your_password}` med lösenordet du valde när servern skapades, och spara strängen lokalt.
 
-Lägg den aldrig i repot. En anslutningssträng med lösenord i klartext hör inte hemma i versionshanterad kod. I Del 2 lägger vi den i User Secrets, som ligger utanför projektmappen.
+Lägg den aldrig i repot. En anslutningssträng med lösenord i klartext hör inte hemma i versionshanterad kod. I Del 3 lägger vi den i User Secrets, som ligger utanför projektmappen.
 
 ## Testa anslutningen
 
-Det här steget är värt att göra. Fungerar anslutningen härifrån fungerar normalt också connection stringen i Del 2.
+Det här steget är värt att göra. Fungerar anslutningen härifrån fungerar normalt också connection stringen i Del 3.
 
 Du behöver inget extra program — Visual Studio har en inbyggd databasvy.
 
@@ -256,7 +256,7 @@ Du behöver inget extra program — Visual Studio har en inbyggd databasvy.
 6. Under **Database Name**, skriv `sqldb-todo-one`. Lämnar du fältet tomt ansluter du mot `master` och ser inte dina tabeller.
 7. Klicka **Connect**.
 
-Bläddra sedan ner till `Databases` → `sqldb-todo-one` → `Tables`. Den är tom än så länge, och det är väntat — vi skapar tabellen i Del 2.
+Bläddra sedan ner till `Databases` → `sqldb-todo-one` → `Tables`. Den är tom än så länge, och det är väntat — vi skapar tabellen i Del 3.
 
 Saknas menyvalet **SQL Server Object Explorer** behöver du lägga till workloaden `Data storage and processing` i Visual Studio Installer.
 
@@ -279,107 +279,9 @@ Symptomen är att databasvyn inte längre ansluter, eller att appen kastar `Cann
 
 Gamla regler kan ligga kvar utan att göra skada, men det är prydligt att rensa bort dem med jämna mellanrum.
 
-## Kolla kostnaden
-
-Databasen är på plats och du har inte betalat något. Nu sätter vi upp spärren som gör att det förblir så.
-
-Så här ser kostnadsbilden ut konkret:
-
-| Resurs | Kostnad i den här serien |
-| --- | --- |
-| Resursgrupp | Gratis, alltid. Det är bara en behållare. |
-| SQL-databas via Free offer | Gratis. Pausas automatiskt vid gränsen. |
-| App Service `Free F1` (Del 3) | Gratis. |
-| Azure DevOps | Gratis upp till fem användare. |
-
-Det syns i sammanfattningen du klickade förbi när databasen skapades: `Estimated total: Free` och `Overage billing: Disabled`. Det sista betyder att databasen pausas när gratisgränsen nås, i stället för att börja debitera.
-
-Ändå ska du sätta upp bevakning. Inte för att den här serien blir dyr, utan för att vanan är värd att ha när du väl provar något som kostar — och för att det är just den vissheten som gör att man vågar experimentera.
-
-### Tre verktyg under Monitoring
-
-I portalen, sök efter **Cost Management** och titta i vänstermenyn under rubriken `Monitoring`. Där finns tre saker som låter lika men gör olika:
-
-| Verktyg | Vad det gör | Värt att sätta upp nu? |
-| --- | --- | --- |
-| **Budgets** | Du sätter ett belopp och får mejl vid valda procentgränser. | Ja. |
-| **Cost alerts** | Inkorgen för larm som redan utlösts. Här skapar du också anomalilarm. | Ja, se nedan. |
-| **Alerts** | Larm på faktureringsnivå: krediter, fakturor, reservationsutnyttjande. | Nej. |
-
-Den sista är lätt att fastna i. Öppnar du `Alerts` från en **Billing profile** får du en dialog där `Alert type` erbjuder saker som `Reservation utilization` — larm om att reservationer du köpt inte används. Har du inga reservationer, vilket du inte har, finns inget att bevaka. Stäng och gå vidare.
-
-### Skapa en budget
-
-Gå in via prenumerationen, så hamnar budgeten på rätt nivå direkt. Öppnar du `Cost Management` från portalens startsida landar du ofta på faktureringskontot i stället, och då bevakar budgeten hela kontot. Det fungerar, men är trubbigare — du ser inte vad just den här prenumerationen kostar.
-
-1. Sök **Subscriptions** i portalen och klicka på prenumerationen i listan.
-2. I vänstermenyn: **Cost Management** → `Budgets` → klicka **+ Add**.
-3. `Budget scoping`:
-   * Scope: ska redan visa prenumerationens namn.
-   * Filters: hoppa över. Vill du senare bevaka bara en resursgrupp lägger du till ett filter här.
-4. `Budget Details`:
-   * Name: `budget-monthly`. Namnet måste vara unikt inom scopet.
-   * Reset period: **Monthly**. Beloppet nollställs den första varje månad.
-   * Creation date: innevarande månad, dagen fylls i automatiskt.
-   * Expiration date: låt förslaget stå. Budgeten upphör då att gälla, så sätt en påminnelse om du vill förlänga.
-5. `Budget Amount`:
-   * Amount: **150**. Azure föreslår en siffra baserad på din prognos, ofta noll eller några kronor på ett nytt konto. Sätt ändå ett rimligt tak — 150 kr i månaden är lågt nog att larma tidigt utan att pipa för varje krona.
-
-   Har du redan andra resurser i prenumerationen behöver du välja belopp med omsorg. Ligger din nuvarande förbrukning på 130 kr i månaden kommer ett tak på 150 larma varje månad utan att något faktiskt hänt, och larm som alltid tjuter slutar man läsa. Antingen höjer du taket ordentligt över baslinjen, eller så filtrerar du budgeten till bara `rg-dev` under `Budget scoping` → `Add filter` → `Resource group`. Det andra alternativet är oftast bättre — då mäter du den här serien för sig, och dina befintliga resurser stör inte.
-6. Klicka **Next** för att komma till `Set alerts`.
-
-Har du redan skapat en budget och är osäker på var den hamnade: öppna `Budgets` via menyn ovan. Syns den i listan är den kopplad till prenumerationen. Är listan tom ligger den på faktureringskontot, och du kan skapa om den härifrån.
-
-Står det i stället `Failed to retrieve billing information` har sidan inte lyckats hämta data — det säger ingenting om huruvida budgeten finns. Felet är övergående. Klicka `Refresh`, eller kom tillbaka senare. Inget i den här serien är beroende av budgeten, så du kan gå vidare under tiden.
-
-### Sätt larmen
-
-Här väljer du vid vilka nivåer du vill bli störd. Lägg till tre rader:
-
-| Type | % of budget | Vad det betyder med 150 kr |
-| --- | --- | --- |
-| Actual | 50 | Mejl vid 75 kr förbrukat |
-| Actual | 80 | Mejl vid 120 kr |
-| Forecasted | 100 | Mejl när Azure *förutspår* att du landar över 150 kr |
-
-Den sista är den mest användbara. `Forecasted` larmar innan pengarna är spenderade, baserat på hur förbrukningen ser ut hittills. `Actual` larmar när det redan hänt.
-
-Fyll i din e-postadress under `Alert recipients`, och klicka **Create**.
-
-Vill du larma flera personer skriver du en adress per rad — tryck Enter emellan. Semikolon eller komma på samma rad underkänns, eftersom hela strängen då tolkas som en enda adress. Alla mottagare får samma mejl vid samma tröskel.
-
-**En viktig sak att veta:** en budget stoppar ingenting. Den skickar mejl. Azure fortsätter köra dina resurser även när taket passeras. Vill du att något ska stängas av krävs en automatisering, vilket ligger utanför den här serien. Budgeten är en rökdetektor, inte ett sprinklersystem.
-
-### Anomalilarm under `Cost alerts`
-
-En budget larmar när summan blir för hög. Ett anomalilarm larmar när mönstret ändras — om din dagliga förbrukning plötsligt dubblas, även om totalen fortfarande är låg. Det fångar den klassiska tabben: en resurs som råkat skapas i fel prisklass, eller en tjänst som inte stängdes av.
-
-Anomalilarm går bara att skapa på prenumerationsnivå, och det gäller alla konton. Öppnar du `Cost Management` direkt från portalens startsida landar du ofta på faktureringskontot i stället, och då är valet gråmarkerat med texten *Not available for billing profiles. Please change scope to a subscription.* Gå därför in via prenumerationen från början:
-
-1. Sök **Subscriptions** i portalen och klicka på prenumerationen i listan.
-2. I vänstermenyn: **Cost Management** → `Cost alerts`.
-3. Klicka **+ Add**.
-4. `Alert type`: **Anomaly**. Övriga fält i `Condition` fylls i automatiskt och kan stå som de är.
-5. `Subject`, `Message` och `Alert name` är förifyllda med rimliga värden. Ändra bara om du vill.
-6. `Recipients`: din e-postadress. Flera går bra, en per rad.
-7. `Language`: styr språket i larmmejlet. Sätt engelska om du vill hålla samma linje som resten av serien.
-8. Klicka **Create**. Knappen tänds först när fältet du senast skrev i tappar fokus — tryck Tab om den ser gråmarkerad ut trots att allt är ifyllt.
-
-Notera datumet efter `until` i `Condition`. Regeln slutar gälla då, normalt ett år fram. Vill du ha bevakning längre än så får du förlänga eller skapa om den.
-
-Är du redan inne i `Cost Management` och ser `Billing profile` i rubriken kan du i stället klicka på scope-namnet högst upp på sidan och byta till prenumerationen.
-
-Två begränsningar värda att känna till: Azure lär sig ditt mönster från de senaste 60 dagarna, så på ett nytt konto tar det ett tag innan larmet är meningsfullt, och detektionen har ett par dygns fördröjning. Det ersätter alltså inte budgeten — det kompletterar den.
-
-### Om något ändå kostar
-
-Gå till **Cost Management** → `Cost analysis` och gruppera på `Service name`. Då ser du exakt vilken tjänst det är.
-
-Den kraftigaste åtgärden är att ta bort hela resursgruppen: **Resource groups** → `rg-dev` → **Delete resource group** → skriv namnet för att bekräfta. Allt inuti försvinner, och kostnaden upphör. Du kan alltid köra Del 1 igen — det tar en kvart.
-
 ## Anteckna innan du går vidare
 
-Följande uppgifter behöver du i Del 2 och 3. Skriv ner dem i ett eget dokument nu, så slipper du leta senare.
+Följande uppgifter behöver du i resten av serien. Skriv ner dem i ett eget dokument nu, så slipper du leta senare.
 
 Skulle du ändå tappa bort något står det i tabellen var du hittar det igen. Sökrutan högst upp i portalen är att föredra framför menyvägar, eftersom menyerna flyttar på sig mellan portalversioner medan tjänstnamnen ligger still. Sök på `Azure SQL` och inte på `SQL server` — det senare ger mest träffar på Marketplace-produkter och SQL Server på virtuella maskiner.
 
@@ -397,7 +299,7 @@ Skulle du ändå tappa bort något står det i tabellen var du hittar det igen. 
 | Anslutningssträng | Sök `Azure SQL` → `All resources` → databasen → `Overview` → `Show database connection strings` → `ADO.NET (SQL authentication)` |
 | Entra-admin för SQL-servern | Sök `Azure SQL` → `All resources` → servern → `Settings` → `Microsoft Entra ID` |
 | GitHub-användarnamn | Under din profilbild uppe till höger på `github.com` |
-| Azure DevOps-organisation | Skapas i Del 3. Namnet står sedan i adressfältet: `dev.azure.com/<organisation>` |
+| Azure DevOps-organisation | Skapas i Del 4. Namnet står sedan i adressfältet: `dev.azure.com/<organisation>` |
 
 ## Felsökning
 
@@ -458,12 +360,8 @@ Då är du sannolikt ansluten mot `master`. Ange `sqldb-todo-one` under **Databa
 
 ## Vidare till Del 2
 
-Bockade du av allt? Då är den tråkiga delen avklarad, och du behöver inte göra om den. Det du har byggt är en grund: verktygen på plats, en databas i molnet, en spärr som säger till om något börjar kosta. Nästa gång du får en idé kan du hoppa direkt till Del 2 och vara igång på en kvart.
+Bockade du av allt? Då är grunden lagd, och du behöver aldrig göra om den här delen. Verktygen sitter, kontona finns, och en databas väntar i molnet.
 
-Just nu står databasen tom. Ingen tabell, ingen rad, ingenting. Det är i Del 2 vi ändrar på det.
+Innan vi börjar koda tar vi en kort avstickare. Del 2 handlar om kostnader — hur du sätter ett tak, får ett mejl när något närmar sig det, och slipper den där oron för en oväntad faktura som stoppar de flesta från att experimentera i Azure. Det tar tio minuter och är den bästa investeringen i serien.
 
-Där bygger vi appen från en tom mapp: skelettet från terminalen, koden i Visual Studio, och en enkel todo-lista med allt du behöver kunna göra — lägga till, markera som klar, ta bort. Både som webbsida och som API.
-
-Och när du kör `SELECT * FROM Todos` på slutet ser du dina egna rader ligga i molnet. Det är då det brukar klicka.
-
-Vi ses i Del 2.
+Sedan bygger vi appen i Del 3.
