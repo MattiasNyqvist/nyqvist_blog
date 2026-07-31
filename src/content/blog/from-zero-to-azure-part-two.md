@@ -2,7 +2,7 @@
 title: "From Zero To Azure Part Two"
 description: "Del 2 av fem: sätt ett kostnadstak i Azure, få larm i tid och slipp oroa dig för oväntade fakturor."
 pubDate: 2026-05-31
-heroImage: "../../assets/images/blog/from-zero-to-azure-part-two/from-zero-to-azure-part-two.jpg"
+heroImage: "../../assets/images/blog/from-zero-to-azure-part-two/hero-from-zero-to-azure-part-two.jpg"
 tags: ["Azure"]
 ---
 

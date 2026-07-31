@@ -2,7 +2,7 @@
 title: "From Zero To Azure Part Five"
 description: "Del 5 av fem: bygg en Azure DevOps-pipeline som bygger, testar och driftsätter appen automatiskt vid varje push."
 pubDate: 2026-06-21
-heroImage: "../../assets/images/blog/from-zero-to-azure-part-five/from-zero-to-azure-part-five.jpg"
+heroImage: "../../assets/images/blog/from-zero-to-azure-part-five/hero-from-zero-to-azure-part-five.jpg"
 tags: ["Azure"]
 ---
 

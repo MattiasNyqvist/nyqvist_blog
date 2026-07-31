@@ -2,7 +2,7 @@
 title: "From Zero To Azure Part Three"
 description: "Del 3 av fem: bygg en ASP.NET Core-app med CRUD mot Azure SQL, från tomt skelett till körande app på din egen maskin."
 pubDate: 2026-06-07
-heroImage: "../../assets/images/blog/from-zero-to-azure-part-three/from-zero-to-azure-part-three.jpg"
+heroImage: "../../assets/images/blog/from-zero-to-azure-part-three/hero-from-zero-to-azure-part-three.jpg"
 tags: ["Azure"]
 ---
 # Del 3 — Bygg appen

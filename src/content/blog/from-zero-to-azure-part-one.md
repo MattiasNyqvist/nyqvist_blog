@@ -2,7 +2,7 @@
 title: "From Zero To Azure Part One"
 description: "Del 1 av fem: installera verktygen, skapa kontona och sätt upp en Azure SQL-databas — grunden för att bygga och driftsätta en ASP.NET Core-app."
 pubDate: 2026-05-24
-heroImage: "../../assets/images/blog/from-zero-to-azure-part-one/from-zero-to-azure-part-one.jpg"
+heroImage: "../../assets/images/blog/from-zero-to-azure-part-one/hero-from-zero-to-azure-part-one.jpg"
 tags: ["Azure"]
 ---
 # Del 1 — Sätt upp miljön

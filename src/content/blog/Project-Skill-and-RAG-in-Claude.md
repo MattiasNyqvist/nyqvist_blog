@@ -2,7 +2,7 @@
 title: "Projects-Skills and RAGs in Claude"
 description: "Några begrepp dyker upp så fort man börjar använda Claude på allvar. Här är vad projekt, skills och RAG betyder, hur de skiljer sig och var de hör hemma."
 pubDate: 2026-05-17
-heroImage: "../../assets/images/blog/Projects-Skills-and-RAGs-in-Claude/Projects-Skills-and-RAGs-in-Claude.jpg"
+heroImage: "../../assets/images/blog/Projects-Skills-and-RAGs-in-Claude/hero-projects-skills-and-rags-in-claude.jpg"
 tags: ["ai","claude","utveckling"]
 ---
 

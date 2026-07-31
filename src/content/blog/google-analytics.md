@@ -2,7 +2,7 @@
 title: "Google Analytics setup"
 description: "This is my post about ..."
 pubDate: 2026-06-28
-heroImage: "../../assets/images/blog/google-analytics/google-analytics.jpg"
+heroImage: "../../assets/images/blog/google-analytics/hero-google-analytics.jpg"
 tags: ["Google", "HowTo"]
 ---
 # Så integrerar du Google Analytics 4 (GA4) på din webbplats

@@ -2,7 +2,7 @@
 title: "From Zero To Azure Part Four"
 description: "Del 4 av fem: lägg upp koden på GitHub, skapa en Azure App Service och koppla Azure DevOps till din prenumeration."
 pubDate: 2026-06-14
-heroImage: "../../assets/images/blog/from-zero-to-azure-part-four/from-zero-to-azure-part-four.jpg"
+heroImage: "../../assets/images/blog/from-zero-to-azure-part-four/hero-from-zero-to-azure-part-four.jpg"
 tags: ["Azure"]
 ---
 
