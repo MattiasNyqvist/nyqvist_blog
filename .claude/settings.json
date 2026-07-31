@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:4321/ -o /tmp/v5_home.html -w \"home:%{http_code}\\\\n\")",
+      "Bash(curl -s http://localhost:4321/blog/google-analytics/ -o /tmp/v5_post.html -w \"post:%{http_code}\\\\n\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --screenshot=\"/c/Users/Mattias/AppData/Local/Temp/claude/d--blog-nyqvist-blog/2dfee83f-0bbe-4aa6-9a08-de17e0ecab31/scratchpad/light.png\" --window-size=1280,1400 \"http://localhost:4321/\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --blink-settings=preferredColorScheme=2 --screenshot=\"/c/Users/Mattias/AppData/Local/Temp/claude/d--blog-nyqvist-blog/2dfee83f-0bbe-4aa6-9a08-de17e0ecab31/scratchpad/dark_test.png\" --window-size=1280,1400 \"http://localhost:4321/\")",
+      "Bash(sed 's#<html lang=\"sv\">#<html lang=\"sv\" data-theme=\"dark\"><base href=\"http://localhost:4321/\">#' /tmp/v5_home.html > /tmp/v5_home_dark.html *)"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
+    ]
+  }
+}

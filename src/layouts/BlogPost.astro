@@ -7,7 +7,10 @@ import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import { Image } from "astro:assets";
 
-type Props = CollectionEntry<"blog">["data"] & { id?: string };
+type Props = Omit<CollectionEntry<"blog">["data"], "pubDate"> & {
+  id?: string;
+  pubDate?: Date;
+};
 
 const { title, description, pubDate, updatedDate, heroImage, tags, id } =
   Astro.props;
@@ -33,6 +36,7 @@ const relatedPosts = allPosts
     <BaseHead title={title} description={description} />
   </head>
   <body>
+    <div id="reading-progress" class="reading-progress"></div>
     <Header />
     <main>
       <article class="article-container">
@@ -51,16 +55,18 @@ const relatedPosts = allPosts
         }
         <div class="prose">
           <div class="title">
-            <div class="date">
-              <FormattedDate date={pubDate} />
-              {
-                updatedDate && (
-                  <div class="last-updated-on">
-                    Uppdaterad: <FormattedDate date={updatedDate} />
-                  </div>
-                )
-              }
-            </div>
+            {
+              pubDate && (
+                <div class="date">
+                  <FormattedDate date={pubDate} />
+                  {updatedDate && (
+                    <div class="last-updated-on">
+                      Uppdaterad: <FormattedDate date={updatedDate} />
+                    </div>
+                  )}
+                </div>
+              )
+            }
             <h1>{title}</h1>
             {
               tags && tags.length > 0 && (
@@ -84,8 +90,12 @@ const relatedPosts = allPosts
             <section class="related-section">
               <h3>Fler anteckningar på liknande spår</h3>
               <div class="related-grid">
-                {relatedPosts.map((post) => (
-                  <a href={`/blog/${post.id}/`} class="related-card">
+                {relatedPosts.map((post, i) => (
+                  <a
+                    href={`/blog/${post.id}/`}
+                    class="related-card reveal"
+                    style={`--reveal-delay: ${i * 80}ms`}
+                  >
                     {post.data.heroImage && (
                       <div class="related-img-wrap">
                         <Image
@@ -115,7 +125,45 @@ const relatedPosts = allPosts
   </body>
 </html>
 
+<script>
+  let cleanupReadingProgress: (() => void) | undefined;
+
+  function initReadingProgress() {
+    cleanupReadingProgress?.();
+    const bar = document.getElementById("reading-progress");
+    const article = document.querySelector(".article-container");
+    if (!bar || !article) return;
+
+    const update = () => {
+      const rect = article.getBoundingClientRect();
+      const total = article.scrollHeight - window.innerHeight;
+      const pct = total > 0 ? (Math.min(Math.max(-rect.top, 0), total) / total) * 100 : 0;
+      bar.style.width = pct + "%";
+    };
+
+    update();
+    document.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    cleanupReadingProgress = () => {
+      document.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }
+
+  document.addEventListener("astro:page-load", initReadingProgress);
+</script>
+
 <style>
+  .reading-progress {
+    position: fixed;
+    top: var(--header-height, 70px);
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--accent-warm);
+    z-index: 40;
+  }
+
   .article-container {
     max-width: 800px;
     margin: 0 auto;
@@ -127,7 +175,7 @@ const relatedPosts = allPosts
     margin-bottom: 2rem;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-soft);
   }
 
   .article-hero-img {
@@ -144,7 +192,7 @@ const relatedPosts = allPosts
 
   .date {
     font-size: 0.85rem;
-    color: #6b7280;
+    color: var(--text-muted);
     margin-bottom: 0.5rem;
   }
 
@@ -168,13 +216,13 @@ const relatedPosts = allPosts
   .related-section {
     margin-top: 4rem;
     padding-top: 2rem;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--border-soft);
   }
 
   .related-section h3 {
     font-size: 1.25rem;
-    font-weight: 500;
-    color: #111827;
+    font-weight: 600;
+    color: var(--text-main);
     margin-bottom: 1.5rem;
   }
 
@@ -185,9 +233,8 @@ const relatedPosts = allPosts
   }
 
   .related-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-left: 3px solid var(--brand, #367588);
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
     border-radius: 6px;
     text-decoration: none;
     color: inherit;
@@ -196,12 +243,14 @@ const relatedPosts = allPosts
     flex-direction: column;
     transition:
       transform 0.2s ease,
+      border-color 0.2s ease,
       box-shadow 0.2s ease;
   }
 
   .related-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    border-color: var(--accent-warm);
+    box-shadow: 0 8px 16px rgba(36, 31, 28, 0.08);
   }
 
   .related-img-wrap {
@@ -225,14 +274,15 @@ const relatedPosts = allPosts
 
   .related-date {
     font-size: 0.7rem;
-    color: #6b7280;
+    color: var(--text-muted);
     margin-bottom: 0.3rem;
   }
 
   .related-content h4 {
+    font-family: var(--font-heading);
     font-size: 0.95rem;
-    font-weight: 500;
-    color: #111827;
+    font-weight: 600;
+    color: var(--text-main);
     margin: 0;
     line-height: 1.3;
   }

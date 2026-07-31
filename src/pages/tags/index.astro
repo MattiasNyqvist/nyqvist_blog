@@ -14,7 +14,7 @@ posts.forEach((post) => {
   });
 });
 
-const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+const tags = Object.entries(tagCounts).sort((a, b) => a[0].localeCompare(b[0], "sv"));
 ---
 
 <!doctype html>
@@ -30,12 +30,14 @@ const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
 
       <div class="tag-grid">
         {
-          tags.map(([tag, count]) => (
-            <a href={`/tags/${tag}/`} class="tag-card">
+          tags.map(([tag, count], i) => (
+            <a
+              href={`/tags/${tag}/`}
+              class="tag-card reveal"
+              style={`--reveal-delay: ${(i % 8) * 40}ms`}
+            >
               <span class="tag-name">#{tag}</span>
-              <span class="tag-count">
-                {count} {count === 1 ? "inlägg" : "inlägg"}
-              </span>
+              <span class="tag-count">{count} inlägg</span>
             </a>
           ))
         }
@@ -48,13 +50,13 @@ const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
 <style>
   h1 {
     font-size: 2rem;
-    font-weight: 300;
-    color: #111827;
+    font-weight: 700;
+    color: var(--text-main);
     margin-bottom: 0.5rem;
   }
 
   .intro {
-    color: #6b7280;
+    color: var(--text-muted);
     font-size: 0.95rem;
     margin-bottom: 2.5rem;
   }
@@ -71,7 +73,7 @@ const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
     gap: 0.25rem;
     padding: 0.9rem 1.25rem;
     background: var(--bg-card);
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-soft);
     border-radius: 6px;
     text-decoration: none;
     transition:
@@ -93,6 +95,6 @@ const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
 
   .tag-count {
     font-size: 0.72rem;
-    color: #9ca3af;
+    color: var(--text-muted);
   }
 </style>

@@ -38,10 +38,7 @@ const { posts } = Astro.props;
       <div class="tag-header">
         <a href="/tags/" class="back-link">← Alla taggar</a>
         <h1>#{tag}</h1>
-        <p class="post-count">
-          {posts.length}
-          {posts.length === 1 ? "inlägg" : "inlägg"}
-        </p>
+        <p class="post-count">{posts.length} inlägg</p>
       </div>
 
       <ul class="post-list">
@@ -77,12 +74,12 @@ const { posts } = Astro.props;
   .tag-header {
     margin-bottom: 2.5rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-soft);
   }
 
   .back-link {
     font-size: 0.82rem;
-    color: #6b7280;
+    color: var(--text-muted);
     text-decoration: none;
     display: inline-block;
     margin-bottom: 0.75rem;
@@ -96,14 +93,14 @@ const { posts } = Astro.props;
 
   .tag-header h1 {
     font-size: 2rem;
-    font-weight: 300;
-    color: #111827;
+    font-weight: 700;
+    color: var(--text-main);
     margin: 0 0 0.25rem 0;
   }
 
   .post-count {
     font-size: 0.85rem;
-    color: #9ca3af;
+    color: var(--text-muted);
     margin: 0;
   }
 
@@ -114,7 +111,7 @@ const { posts } = Astro.props;
   }
 
   .post-item {
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-soft);
   }
 
   .post-item:last-child {
@@ -135,21 +132,22 @@ const { posts } = Astro.props;
 
   .post-meta {
     font-size: 0.78rem;
-    color: #6b7280;
+    color: var(--text-muted);
     margin-bottom: 0.5rem;
   }
 
   .post-title {
+    font-family: var(--font-heading);
     font-size: 1.25rem;
-    font-weight: 500;
-    color: #111827;
+    font-weight: 600;
+    color: var(--text-main);
     margin: 0 0 0.6rem 0;
     line-height: 1.3;
   }
 
   .post-description {
     font-size: 0.95rem;
-    color: #374151;
+    color: var(--text-muted);
     line-height: 1.7;
     margin: 0 0 1rem 0;
   }

@@ -42,13 +42,12 @@ const { pagePosts, currentPage, totalPages } = Astro.props;
     <main>
       <div class="blog-header">
         <h1>Inlägg</h1>
-        <a href="/tags/" class="all-tags-link">Bläddra bland taggar →</a>
       </div>
 
       <ul class="post-grid">
         {
-          pagePosts.map((post) => (
-            <li class="post-item">
+          pagePosts.map((post, i) => (
+            <li class="post-item reveal" style={`--reveal-delay: ${(i % 3) * 80}ms`}>
               <a href={`/blog/${post.id}/`} class="post-link">
                 <div class="post-image">
                   {post.data.heroImage ? (
@@ -62,11 +61,11 @@ const { pagePosts, currentPage, totalPages } = Astro.props;
                   ) : (
                     <div class="post-img-placeholder" />
                   )}
-                </div>
-                <div class="post-body">
-                  <div class="post-meta">
+                  <div class="date-overlay">
                     <FormattedDate date={post.data.pubDate} />
                   </div>
+                </div>
+                <div class="post-body">
                   <h2 class="post-title">{post.data.title}</h2>
                   <p class="post-description">{post.data.description}</p>
                   {post.data.tags && post.data.tags.length > 0 && (
@@ -112,25 +111,14 @@ const { pagePosts, currentPage, totalPages } = Astro.props;
     justify-content: space-between;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-soft);
   }
 
   .blog-header h1 {
     margin: 0;
-    font-size: 2rem;
-    font-weight: 300;
-    color: #111827;
-  }
-
-  .all-tags-link {
-    font-size: 0.85rem;
-    color: var(--brand);
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .all-tags-link:hover {
-    opacity: 0.7;
+    font-size: clamp(1.6rem, 1.3rem + 1.5vw, 2.2rem);
+    font-weight: 700;
+    color: var(--text-main);
   }
 
   .post-grid {
@@ -140,22 +128,43 @@ const { pagePosts, currentPage, totalPages } = Astro.props;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
+    align-items: start;
   }
 
   .post-item {
-    background: #ffffff;
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
     border-radius: 6px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
     overflow: hidden;
-    transition: box-shadow 0.2s ease;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.2s ease;
     padding: 0;
-    border-bottom: none;
     display: flex;
     flex-direction: column;
+    position: relative;
+  }
+
+  .post-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent-warm);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
   }
 
   .post-item:hover {
-    box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px -2px rgba(36, 31, 28, 0.1);
+  }
+
+  .post-item:hover::before {
+    transform: scaleX(1);
   }
 
   .post-link {
@@ -168,9 +177,23 @@ const { pagePosts, currentPage, totalPages } = Astro.props;
 
   .post-image {
     width: 100%;
-    height: 180px;
+    height: 150px;
     overflow: hidden;
     flex-shrink: 0;
+    position: relative;
+  }
+
+  .date-overlay {
+    position: absolute;
+    left: 0.9rem;
+    bottom: 0.7rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 0.3rem 0.65rem;
+    border-radius: 4px;
+    letter-spacing: 0.01em;
   }
 
   .post-img {
@@ -184,7 +207,7 @@ const { pagePosts, currentPage, totalPages } = Astro.props;
   .post-img-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 100%);
+    background: linear-gradient(135deg, var(--gray-light) 0%, var(--bg-card) 100%);
   }
 
   .post-item:hover .post-img {
@@ -192,33 +215,31 @@ const { pagePosts, currentPage, totalPages } = Astro.props;
   }
 
   .post-body {
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1.5rem;
     flex: 1;
     display: flex;
     flex-direction: column;
   }
 
-  .post-meta {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-bottom: 0.4rem;
-    font-weight: 400;
-  }
 
   .post-title {
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: #111827;
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-main);
     margin: 0 0 0.5rem 0;
     line-height: 1.3;
   }
 
   .post-description {
     font-size: 0.9rem;
-    color: #374151;
+    color: var(--text-muted);
     line-height: 1.6;
-    margin: 0 0 1rem 0;
-    flex: 1;
+    margin: 0 0 0.75rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .tag-list {
@@ -243,12 +264,12 @@ const { pagePosts, currentPage, totalPages } = Astro.props;
     justify-content: space-between;
     margin-top: 3rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--border-soft);
   }
 
   .pagination-info {
     font-size: 0.85rem;
-    color: #6b7280;
+    color: var(--text-muted);
   }
 
   .pagination-prev,

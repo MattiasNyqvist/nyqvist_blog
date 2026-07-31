@@ -1,27 +1,45 @@
-/* --- MINIMALIST & EXCLUSIVE THEME --- */
+/* --- WARM EDITORIAL THEME --- */
 
 :root {
   --brand: #367588;
-  --text-main: #2d3436;
-  --text-muted: #636e72;
-  --bg-body: #f7f9fa;
-  --bg-card: #ffffff;
-  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  --accent-warm: #c1622f;
+  --accent-warm-soft: rgba(193, 98, 47, 0.1);
+  --text-main: #241f1c;
+  --text-muted: #746a61;
+  --bg-body: #faf6f1;
+  --bg-card: #fefbf7;
+  --border-soft: #e7e0d6;
+  --card-shadow: 0 4px 20px rgba(36, 31, 28, 0.05);
   --accent: #367588;
-  --gray: #636e72;
-  --gray-light: #f0f4f5;
+  --gray: #746a61;
+  --gray-light: #f1ece3;
+  --font-heading: var(--font-jakarta), 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-body: var(--font-atkinson), 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --brand: #6bb3c4;
+  --accent-warm: #e2915d;
+  --accent-warm-soft: rgba(226, 145, 93, 0.15);
+  --text-main: #f2ece4;
+  --text-muted: #b3a89d;
+  --bg-body: #19140f;
+  --bg-card: #241e18;
+  --border-soft: #3a3128;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --accent: #6bb3c4;
+  --gray: #b3a89d;
+  --gray-light: #2c241c;
+  color-scheme: dark;
 }
 
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-html {
-  overflow-x: hidden;
-}
-
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-body);
   margin: 0;
   padding: 0;
   background-color: var(--bg-body);
@@ -31,8 +49,10 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
   width: 100%;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
 main {
@@ -45,19 +65,22 @@ main {
 
 /* Typography */
 h1, h2, h3 {
+  font-family: var(--font-heading);
   color: var(--text-main);
-  font-weight: 300;
+  font-weight: 500;
   margin-bottom: 1.5rem;
-  line-height: 1.2;
-}
-
-h1 {
-  font-size: 2.4rem;
+  line-height: 1.15;
   letter-spacing: -0.01em;
 }
 
+h1 {
+  font-size: clamp(1.9rem, 1.5rem + 1.8vw, 2.6rem);
+  font-weight: 600;
+}
+
 h2 {
-  font-size: 1.6rem;
+  font-size: clamp(1.35rem, 1.15rem + 0.9vw, 1.7rem);
+  font-weight: 600;
   margin-top: 3rem;
   color: var(--brand);
 }
@@ -89,7 +112,7 @@ ul {
 
 li {
   padding: 1.5rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-soft);
 }
 
 li:last-child {
@@ -118,8 +141,27 @@ li:last-child {
     margin: 1.5rem auto;
     padding: 0 1.25rem;
   }
+}
 
-  h1 {
-    font-size: 1.8rem;
+/* Rulla-in-effekt */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

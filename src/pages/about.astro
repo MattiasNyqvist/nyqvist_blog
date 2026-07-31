@@ -24,7 +24,7 @@ import Layout from "../layouts/BlogPost.astro";
     konsekvenserna för arbetssätt och ansvar som fångar mitt intresse.
   </p>
 
-  <b>Om bloggen</b>
+  <h2>Om bloggen</h2>
   <p>
     Den här bloggen är mitt öppna anteckningsblock. Huvudfokus är ledarskap,
     utveckling och AI – men egentligen skriver jag om det jag känner för just
@@ -38,15 +38,23 @@ import Layout from "../layouts/BlogPost.astro";
     ansvar i en tid då automatiserade system förändrar mycket av det vi gör.
   </p>
 
-  <b>Hitta mig</b>
-  <ul>
-    <li>
-      <a href="https://github.com/MattiasNyqvist" target="_blank">GitHub</a>
-    </li>
-    <li>
-      <a href="https://www.linkedin.com/in/mattias-nyqvist" target="_blank"
-        >LinkedIn</a
-      >
-    </li>
-  </ul>
+  <h2>Hitta mig</h2>
+  <div class="find-me-links">
+    <a href="https://github.com/MattiasNyqvist" target="_blank">GitHub</a>
+    <span aria-hidden="true">·</span>
+    <a href="https://www.linkedin.com/in/mattias-nyqvist" target="_blank">LinkedIn</a>
+  </div>
 </Layout>
+
+<style>
+  .find-me-links {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+  }
+
+  .find-me-links span {
+    color: var(--text-muted);
+  }
+</style>
